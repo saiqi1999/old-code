@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hrm.mapper.HrmTrainingMapper">
+    
+    <resultMap type="HrmTraining" id="HrmTrainingResult">
+        <result property="programId"    column="program_id"    />
+        <result property="programName"    column="program_name"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="programType"    column="program_type"    />
+        <result property="programMethod"    column="program_method"    />
+        <result property="programYear"    column="program_year"    />
+        <result property="programPlace"    column="program_place"    />
+        <result property="programHost"    column="program_host"    />
+        <result property="programDocument"    column="program_document"    />
+        <result property="programDepartment"    column="program_department"    />
+        <result property="programGoal"    column="program_goal"    />
+        <result property="programContent"    column="program_content"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectHrmTrainingVo">
+        select program_id, program_name, start_time, end_time, program_type, program_method, program_year, program_place, program_host, program_document, program_department, program_goal, program_content, create_by, create_time, update_by, update_time, remark from hrm_training
+    </sql>
+
+    <select id="selectHrmTrainingList1" parameterType="HrmTraining" resultMap="HrmTrainingResult">
+        <include refid="selectHrmTrainingVo"/>
+        <where>  
+            <if test="programId != null "> and program_id = #{programId}</if>
+            <if test="programName != null "> and program_name like concat('%', #{programName}, '%')</if>
+            <if test="startTime != null "> and start_time = #{startTime}</if>
+            <if test="endTime != null "> and end_time = #{endTime}</if>
+            <if test="programType != null  and programType != ''"> and program_type = #{programType}</if>
+            <if test="programMethod != null  and programMethod != ''"> and program_method = #{programMethod}</if>
+            <if test="programYear != null  and programYear != ''"> and program_year = #{programYear}</if>
+            <if test="programPlace != null  and programPlace != ''"> and program_place = #{programPlace}</if>
+            <if test="programDepartment != null  and programDepartment != ''"> and program_department = #{programDepartment}</if>
+        </where>
+    </select>
+    
+    <select id="selectHrmTrainingById" parameterType="Long" resultMap="HrmTrainingResult">
+        <include refid="selectHrmTrainingVo"/>
+        where program_id = #{programId}
+    </select>
+        
+    <insert id="insertHrmTraining" parameterType="HrmTraining" useGeneratedKeys="true" keyProperty="programId">
+        insert into hrm_training
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="programName != null">program_name,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="programType != null">program_type,</if>
+            <if test="programMethod != null">program_method,</if>
+            <if test="programYear != null">program_year,</if>
+            <if test="programPlace != null">program_place,</if>
+            <if test="programHost != null">program_host,</if>
+            <if test="programDocument != null">program_document,</if>
+            <if test="programDepartment != null">program_department,</if>
+            <if test="programGoal != null">program_goal,</if>
+            <if test="programContent != null">program_content,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="programName != null">#{programName},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="programType != null">#{programType},</if>
+            <if test="programMethod != null">#{programMethod},</if>
+            <if test="programYear != null">#{programYear},</if>
+            <if test="programPlace != null">#{programPlace},</if>
+            <if test="programHost != null">#{programHost},</if>
+            <if test="programDocument != null">#{programDocument},</if>
+            <if test="programDepartment != null">#{programDepartment},</if>
+            <if test="programGoal != null">#{programGoal},</if>
+            <if test="programContent != null">#{programContent},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHrmTraining" parameterType="HrmTraining">
+        update hrm_training
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="programName != null">program_name = #{programName},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="programType != null">program_type = #{programType},</if>
+            <if test="programMethod != null">program_method = #{programMethod},</if>
+            <if test="programYear != null">program_year = #{programYear},</if>
+            <if test="programPlace != null">program_place = #{programPlace},</if>
+            <if test="programHost != null">program_host = #{programHost},</if>
+            <if test="programDocument != null">program_document = #{programDocument},</if>
+            <if test="programDepartment != null">program_department = #{programDepartment},</if>
+            <if test="programGoal != null">program_goal = #{programGoal},</if>
+            <if test="programContent != null">program_content = #{programContent},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where program_id = #{programId}
+    </update>
+
+    <delete id="deleteHrmTrainingById" parameterType="Long">
+        delete from hrm_training where program_id = #{programId}
+    </delete>
+
+    <delete id="deleteHrmTrainingByIds" parameterType="String">
+        delete from hrm_training where program_id in 
+        <foreach item="programId" collection="array" open="(" separator="," close=")">
+            #{programId}
+        </foreach>
+    </delete>
+
+</mapper>

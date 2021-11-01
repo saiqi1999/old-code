@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hrm.mapper.HrmCalendarMapper">
+    
+    <resultMap type="HrmCalendar" id="HrmCalendarResult">
+        <result property="eventId"    column="event_id"    />
+        <result property="aboutUser"    column="about_user"    />
+        <result property="eventTitle"    column="event_title"    />
+        <result property="eventInfo"    column="event_info"    />
+        <result property="eventStartDate"    column="event_start_date"    />
+        <result property="eventStartTime"    column="event_start_time"    />
+        <result property="eventEndTime"    column="event_end_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectHrmCalendarVo">
+        select event_id, about_user, event_title, event_info, event_start_date, event_start_time, event_end_time, create_by, create_time, update_by, update_time, remark from hrm_calendar
+    </sql>
+
+    <select id="selectHrmCalendarList" parameterType="HrmCalendar" resultMap="HrmCalendarResult">
+        <include refid="selectHrmCalendarVo"/>
+        <where>  
+            <if test="aboutUser != null  and aboutUser != ''"> and about_user = #{aboutUser}</if>
+            <if test="eventTitle != null  and eventTitle != ''"> and event_title = #{eventTitle}</if>
+            <if test="eventInfo != null  and eventInfo != ''"> and event_info = #{eventInfo}</if>
+            <if test="eventStartDate != null "> and event_start_date &gt;= #{eventStartDate}</if>
+            <if test="eventStartTime != null  and eventStartTime != ''"> and event_start_time = #{eventStartTime}</if>
+            <if test="eventEndTime != null  and eventEndTime != ''"> and event_end_time = #{eventEndTime}</if>
+        </where>
+    </select>
+
+	<select id="selectHrmCalendarSearch" parameterType="HrmCalendar" resultMap="HrmCalendarResult">
+        <include refid="selectHrmCalendarVo"/>
+        <where>  
+            <if test="aboutUser != null  and aboutUser != ''"> and about_user = #{aboutUser}</if>
+            <if test="eventTitle != null  and eventTitle != ''"> and event_title = #{eventTitle}</if>
+            <if test="eventInfo != null  and eventInfo != ''"> and event_info = #{eventInfo}</if>
+            <if test="eventStartDate != null "> and event_start_date = #{eventStartDate}</if>
+            <if test="eventStartTime != null  and eventStartTime != ''"> and event_start_time = #{eventStartTime}</if>
+            <if test="eventEndTime != null  and eventEndTime != ''"> and event_end_time = #{eventEndTime}</if>
+        </where>
+    </select>
+    
+	<select id="selectHrmCalendarBetween" resultMap="HrmCalendarResult">
+        <include refid="selectHrmCalendarVo"/>
+        <where>  
+            <if test="aboutUser != null  and aboutUser != ''"> and about_user = #{aboutUser}</if>
+            <if test="startDate != null "> and event_start_date &gt;= #{startDate}</if>
+			<if test="endDate != null "> and event_start_date &lt;= #{endDate}</if>
+        </where>
+    </select>
+
+    <select id="selectHrmCalendarById" parameterType="Long" resultMap="HrmCalendarResult">
+        <include refid="selectHrmCalendarVo"/>
+        where event_id = #{eventId}
+    </select>
+        
+    <insert id="insertHrmCalendar" parameterType="HrmCalendar" useGeneratedKeys="true" keyProperty="eventId">
+        insert into hrm_calendar
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="aboutUser != null and aboutUser != ''">about_user,</if>
+            <if test="eventTitle != null">event_title,</if>
+            <if test="eventInfo != null">event_info,</if>
+            <if test="eventStartDate != null">event_start_date,</if>
+            <if test="eventStartTime != null and eventStartTime != ''">event_start_time,</if>
+            <if test="eventEndTime != null and eventEndTime != ''">event_end_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="aboutUser != null and aboutUser != ''">#{aboutUser},</if>
+            <if test="eventTitle != null">#{eventTitle},</if>
+            <if test="eventInfo != null">#{eventInfo},</if>
+            <if test="eventStartDate != null">#{eventStartDate},</if>
+            <if test="eventStartTime != null and eventStartTime != ''">#{eventStartTime},</if>
+            <if test="eventEndTime != null and eventEndTime != ''">#{eventEndTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHrmCalendar" parameterType="HrmCalendar">
+        update hrm_calendar
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="aboutUser != null and aboutUser != ''">about_user = #{aboutUser},</if>
+            <if test="eventTitle != null">event_title = #{eventTitle},</if>
+            <if test="eventInfo != null">event_info = #{eventInfo},</if>
+            <if test="eventStartDate != null">event_start_date = #{eventStartDate},</if>
+            <if test="eventStartTime != null and eventStartTime != ''">event_start_time = #{eventStartTime},</if>
+            <if test="eventEndTime != null and eventEndTime != ''">event_end_time = #{eventEndTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where event_id = #{eventId}
+    </update>
+
+    <delete id="deleteHrmCalendarById" parameterType="Long">
+        delete from hrm_calendar where event_id = #{eventId}
+    </delete>
+
+    <delete id="deleteHrmCalendarByIds" parameterType="String">
+        delete from hrm_calendar where event_id in 
+        <foreach item="eventId" collection="array" open="(" separator="," close=")">
+            #{eventId}
+        </foreach>
+    </delete>
+
+</mapper>

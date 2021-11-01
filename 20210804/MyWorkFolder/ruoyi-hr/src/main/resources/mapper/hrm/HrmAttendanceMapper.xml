@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hrm.mapper.HrmAttendanceMapper">
+    
+    <resultMap type="HrmAttendance" id="HrmAttendanceResult">
+        <result property="attendanceId"    column="attendance_id"    />
+        <result property="employeeId"    column="employee_id"    />
+        <result property="employeeName"    column="employee_name"    />
+        <result property="attendanceDate"    column="attendance_date"    />
+        <result property="attendanceType"    column="attendance_type"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectHrmAttendanceVo">
+        select attendance_id, employee_id, employee_name, attendance_date, attendance_type, start_time, end_time, create_by, create_time, update_by, update_time, remark from hrm_attendance
+    </sql>
+
+    <select id="selectHrmAttendanceList" parameterType="HrmAttendance" resultMap="HrmAttendanceResult">
+        <include refid="selectHrmAttendanceVo"/>
+        <where>  
+            <if test="employeeId != null "> and employee_id = #{employeeId}</if>
+            <if test="employeeName != null  and employeeName != ''"> and employee_name like concat('%', #{employeeName}, '%')</if>
+            <if test="attendanceDate != null "> and attendance_date = #{attendanceDate}</if>
+            <if test="attendanceType != null  and attendanceType != ''"> and attendance_type = #{attendanceType}</if>
+            <if test="startTime != null  and startTime != ''"> and start_time = #{startTime}</if>
+            <if test="endTime != null  and endTime != ''"> and end_time = #{endTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectHrmAttendanceById" parameterType="Long" resultMap="HrmAttendanceResult">
+        <include refid="selectHrmAttendanceVo"/>
+        where attendance_id = #{attendanceId}
+    </select>
+        
+    <insert id="insertHrmAttendance" parameterType="HrmAttendance" useGeneratedKeys="true" keyProperty="attendanceId">
+        insert into hrm_attendance
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="employeeId != null">employee_id,</if>
+            <if test="employeeName != null">employee_name,</if>
+            <if test="attendanceDate != null">attendance_date,</if>
+            <if test="attendanceType != null">attendance_type,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="employeeId != null">#{employeeId},</if>
+            <if test="employeeName != null">#{employeeName},</if>
+            <if test="attendanceDate != null">#{attendanceDate},</if>
+            <if test="attendanceType != null">#{attendanceType},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHrmAttendance" parameterType="HrmAttendance">
+        update hrm_attendance
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="employeeId != null">employee_id = #{employeeId},</if>
+            <if test="employeeName != null">employee_name = #{employeeName},</if>
+            <if test="attendanceDate != null">attendance_date = #{attendanceDate},</if>
+            <if test="attendanceType != null">attendance_type = #{attendanceType},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where attendance_id = #{attendanceId}
+    </update>
+
+    <delete id="deleteHrmAttendanceById" parameterType="Long">
+        delete from hrm_attendance where attendance_id = #{attendanceId}
+    </delete>
+
+    <delete id="deleteHrmAttendanceByIds" parameterType="String">
+        delete from hrm_attendance where attendance_id in 
+        <foreach item="attendanceId" collection="array" open="(" separator="," close=")">
+            #{attendanceId}
+        </foreach>
+    </delete>
+
+</mapper>

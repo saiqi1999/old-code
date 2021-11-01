@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hrm.mapper.HrmDiaryMapper">
+    
+    <resultMap type="HrmDiary" id="HrmDiaryResult">
+        <result property="diaryId"    column="diary_id"    />
+        <result property="aboutUser"    column="about_user"    />
+        <result property="diaryTitle"    column="diary_title"    />
+        <result property="diaryInfo"    column="diary_info"    />
+        <result property="dayOfWeek"    column="day_of_week"    />
+        <result property="diaryPeriod"    column="diary_period"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectHrmDiaryVo">
+        select diary_id, about_user, diary_title, diary_info, day_of_week, diary_period, create_by, create_time, update_by, update_time, remark from hrm_diary
+    </sql>
+
+    <select id="selectHrmDiaryList" parameterType="HrmDiary" resultMap="HrmDiaryResult">
+        <include refid="selectHrmDiaryVo"/>
+        <where>  
+            <if test="aboutUser != null  and aboutUser != ''"> and about_user = #{aboutUser}</if>
+            <if test="diaryTitle != null  and diaryTitle != ''"> and diary_title = #{diaryTitle}</if>
+            <if test="diaryInfo != null  and diaryInfo != ''"> and diary_info = #{diaryInfo}</if>
+            <if test="dayOfWeek != null "> and day_of_week = #{dayOfWeek}</if>
+            <if test="diaryPeriod != null  and diaryPeriod != ''"> and diary_period = #{diaryPeriod}</if>
+        </where>
+    </select>
+    
+    <select id="selectHrmDiaryById" parameterType="Long" resultMap="HrmDiaryResult">
+        <include refid="selectHrmDiaryVo"/>
+        where diary_id = #{diaryId}
+    </select>
+        
+    <insert id="insertHrmDiary" parameterType="HrmDiary" useGeneratedKeys="true" keyProperty="diaryId">
+        insert into hrm_diary
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="aboutUser != null and aboutUser != ''">about_user,</if>
+            <if test="diaryTitle != null">diary_title,</if>
+            <if test="diaryInfo != null">diary_info,</if>
+            <if test="dayOfWeek != null">day_of_week,</if>
+            <if test="diaryPeriod != null and diaryPeriod != ''">diary_period,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="aboutUser != null and aboutUser != ''">#{aboutUser},</if>
+            <if test="diaryTitle != null">#{diaryTitle},</if>
+            <if test="diaryInfo != null">#{diaryInfo},</if>
+            <if test="dayOfWeek != null">#{dayOfWeek},</if>
+            <if test="diaryPeriod != null and diaryPeriod != ''">#{diaryPeriod},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHrmDiary" parameterType="HrmDiary">
+        update hrm_diary
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="aboutUser != null and aboutUser != ''">about_user = #{aboutUser},</if>
+            <if test="diaryTitle != null">diary_title = #{diaryTitle},</if>
+            <if test="diaryInfo != null">diary_info = #{diaryInfo},</if>
+            <if test="dayOfWeek != null">day_of_week = #{dayOfWeek},</if>
+            <if test="diaryPeriod != null and diaryPeriod != ''">diary_period = #{diaryPeriod},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where diary_id = #{diaryId}
+    </update>
+
+    <delete id="deleteHrmDiaryById" parameterType="Long">
+        delete from hrm_diary where diary_id = #{diaryId}
+    </delete>
+
+    <delete id="deleteHrmDiaryByIds" parameterType="String">
+        delete from hrm_diary where diary_id in 
+        <foreach item="diaryId" collection="array" open="(" separator="," close=")">
+            #{diaryId}
+        </foreach>
+    </delete>
+
+</mapper>

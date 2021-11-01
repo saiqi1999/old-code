@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hrm.mapper.HrmPerformanceAppraisalMapper">
+    
+    <resultMap type="HrmPerformanceAppraisal" id="HrmPerformanceAppraisalResult">
+        <result property="appraisalId"    column="appraisal_id"    />
+        <result property="employeeId"    column="employee_id"    />
+        <result property="employeeName"    column="employee_name"    />
+        <result property="appraisalType"    column="appraisal_type"    />
+        <result property="appraisalReferTime"    column="appraisal_refer_time"    />
+        <result property="appraisalGrade"    column="appraisal_grade"    />
+        <result property="appraisalLevel"    column="appraisal_level"    />
+        <result property="appraisalDate"    column="appraisal_date"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectHrmPerformanceAppraisalVo">
+        select appraisal_id, employee_id, employee_name, appraisal_type, appraisal_refer_time, appraisal_grade, appraisal_level, appraisal_date, create_by, create_time, update_by, update_time, remark from hrm_performance_appraisal
+    </sql>
+
+    <select id="selectHrmPerformanceAppraisalList" parameterType="HrmPerformanceAppraisal" resultMap="HrmPerformanceAppraisalResult">
+        <include refid="selectHrmPerformanceAppraisalVo"/>
+        <where>  
+            <if test="employeeId != null "> and employee_id = #{employeeId}</if>
+            <if test="employeeName != null  and employeeName != ''"> and employee_name like concat('%', #{employeeName}, '%')</if>
+            <if test="appraisalType != null  and appraisalType != ''"> and appraisal_type = #{appraisalType}</if>
+            <if test="appraisalReferTime != null  and appraisalReferTime != ''"> and appraisal_refer_time = #{appraisalReferTime}</if>
+            <if test="appraisalGrade != null  and appraisalGrade != ''"> and appraisal_grade = #{appraisalGrade}</if>
+            <if test="appraisalLevel != null  and appraisalLevel != ''"> and appraisal_level = #{appraisalLevel}</if>
+            <if test="appraisalDate != null "> and appraisal_date = #{appraisalDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectHrmPerformanceAppraisalById" parameterType="Long" resultMap="HrmPerformanceAppraisalResult">
+        <include refid="selectHrmPerformanceAppraisalVo"/>
+        where appraisal_id = #{appraisalId}
+    </select>
+        
+    <insert id="insertHrmPerformanceAppraisal" parameterType="HrmPerformanceAppraisal" useGeneratedKeys="true" keyProperty="appraisalId">
+        insert into hrm_performance_appraisal
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="employeeId != null">employee_id,</if>
+            <if test="employeeName != null">employee_name,</if>
+            <if test="appraisalType != null">appraisal_type,</if>
+            <if test="appraisalReferTime != null">appraisal_refer_time,</if>
+            <if test="appraisalGrade != null">appraisal_grade,</if>
+            <if test="appraisalLevel != null">appraisal_level,</if>
+            <if test="appraisalDate != null">appraisal_date,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="employeeId != null">#{employeeId},</if>
+            <if test="employeeName != null">#{employeeName},</if>
+            <if test="appraisalType != null">#{appraisalType},</if>
+            <if test="appraisalReferTime != null">#{appraisalReferTime},</if>
+            <if test="appraisalGrade != null">#{appraisalGrade},</if>
+            <if test="appraisalLevel != null">#{appraisalLevel},</if>
+            <if test="appraisalDate != null">#{appraisalDate},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHrmPerformanceAppraisal" parameterType="HrmPerformanceAppraisal">
+        update hrm_performance_appraisal
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="employeeId != null">employee_id = #{employeeId},</if>
+            <if test="employeeName != null">employee_name = #{employeeName},</if>
+            <if test="appraisalType != null">appraisal_type = #{appraisalType},</if>
+            <if test="appraisalReferTime != null">appraisal_refer_time = #{appraisalReferTime},</if>
+            <if test="appraisalGrade != null">appraisal_grade = #{appraisalGrade},</if>
+            <if test="appraisalLevel != null">appraisal_level = #{appraisalLevel},</if>
+            <if test="appraisalDate != null">appraisal_date = #{appraisalDate},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where appraisal_id = #{appraisalId}
+    </update>
+
+    <delete id="deleteHrmPerformanceAppraisalById" parameterType="Long">
+        delete from hrm_performance_appraisal where appraisal_id = #{appraisalId}
+    </delete>
+
+    <delete id="deleteHrmPerformanceAppraisalByIds" parameterType="String">
+        delete from hrm_performance_appraisal where appraisal_id in 
+        <foreach item="appraisalId" collection="array" open="(" separator="," close=")">
+            #{appraisalId}
+        </foreach>
+    </delete>
+
+</mapper>

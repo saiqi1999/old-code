@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hr.mapper.HrCandidateInfoMapper">
+    
+    <resultMap type="HrCandidateInfo" id="HrCandidateInfoResult">
+        <result property="candidateId"    column="candidate_id"    />
+        <result property="candiTime"    column="candi_time"    />
+        <result property="position"    column="position"    />
+        <result property="name"    column="name"    />
+        <result property="sex"    column="sex"    />
+        <result property="certNo"    column="cert_no"    />
+        <result property="birthTime"    column="birth_time"    />
+        <result property="age"    column="age"    />
+        <result property="nationType"    column="nation_type"    />
+        <result property="marriage"    column="marriage"    />
+        <result property="telephone"    column="telephone"    />
+        <result property="joinWorkingTime"    column="join_working_time"    />
+        <result property="politicalStatus"    column="political_status"    />
+        <result property="highestEdu"    column="highest_edu"    />
+        <result property="graduateSchool"    column="graduate_school"    />
+        <result property="graduationTime"    column="graduation_time"    />
+        <result property="major"    column="major"    />
+        <result property="address"    column="address"    />
+        <result property="mainDeptId"    column="main_dept_id"    />
+        <result property="mainDept"    column="main_dept"    />
+        <result property="postId"    column="post_id"    />
+        <result property="postName"    column="post_name"    />
+        <result property="whetherInterview"    column="whether_interview"    />
+        <result property="whetherEmploy"    column="whether_employ"    />
+        <result property="whetherCareer"    column="whether_career"    />
+        <result property="sourceFor"    column="source_for"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectHrCandidateInfoVo">
+        select candidate_id, candi_time, position, name, sex, cert_no, birth_time, age, nation_type, marriage, telephone, join_working_time, political_status, highest_edu, graduate_school, graduation_time, major, address, main_dept_id, main_dept, post_id, post_name, whether_interview, whether_employ, whether_career, source_for, status, create_by, create_time, update_by, update_time, remark from hr_candidate_info
+    </sql>
+
+    <select id="selectHrCandidateInfoList" parameterType="HrCandidateInfo" resultMap="HrCandidateInfoResult">
+        <include refid="selectHrCandidateInfoVo"/>
+        <where>  
+            <if test="params.beginCandiTime != null and params.beginCandiTime != '' and params.endCandiTime != null and params.endCandiTime != ''"> and candi_time between #{params.beginCandiTime} and #{params.endCandiTime}</if>
+            <if test="position != null  and position != ''"> and position = #{position}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="sex != null  and sex != ''"> and sex = #{sex}</if>
+            <if test="certNo != null  and certNo != ''"> and cert_no = #{certNo}</if>
+            <if test="params.beginBirthTime != null and params.beginBirthTime != '' and params.endBirthTime != null and params.endBirthTime != ''"> and birth_time between #{params.beginBirthTime} and #{params.endBirthTime}</if>
+            <if test="params.beginAge != null and params.beginAge != '' and params.endAge != null and params.endAge != ''"> and age between #{params.beginAge} and #{params.endAge}</if>
+            <if test="nationType != null  and nationType != ''"> and nation_type = #{nationType}</if>
+            <if test="marriage != null  and marriage != ''"> and marriage = #{marriage}</if>
+            <if test="politicalStatus != null  and politicalStatus != ''"> and political_status = #{politicalStatus}</if>
+            <if test="highestEdu != null  and highestEdu != ''"> and highest_edu = #{highestEdu}</if>
+            <if test="mainDept != null  and mainDept != ''"> and main_dept = #{mainDept}</if>
+            <if test="postName != null  and postName != ''"> and post_name = #{postName}</if>
+            <if test="whetherInterview != null  and whetherInterview != ''"> and whether_interview = #{whetherInterview}</if>
+            <if test="whetherEmploy != null  and whetherEmploy != ''"> and whether_employ = #{whetherEmploy}</if>
+            <if test="whetherCareer != null  and whetherCareer != ''"> and whether_career = #{whetherCareer}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectHrCandidateInfoById" parameterType="Long" resultMap="HrCandidateInfoResult">
+        <include refid="selectHrCandidateInfoVo"/>
+        where candidate_id = #{candidateId}
+    </select>
+        
+    <insert id="insertHrCandidateInfo" parameterType="HrCandidateInfo" useGeneratedKeys="true" keyProperty="candidateId">
+        insert into hr_candidate_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="candiTime != null">candi_time,</if>
+            <if test="position != null and position != ''">position,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="sex != null and sex != ''">sex,</if>
+            <if test="certNo != null and certNo != ''">cert_no,</if>
+            <if test="birthTime != null">birth_time,</if>
+            <if test="age != null">age,</if>
+            <if test="nationType != null">nation_type,</if>
+            <if test="marriage != null">marriage,</if>
+            <if test="telephone != null">telephone,</if>
+            <if test="joinWorkingTime != null">join_working_time,</if>
+            <if test="politicalStatus != null">political_status,</if>
+            <if test="highestEdu != null">highest_edu,</if>
+            <if test="graduateSchool != null">graduate_school,</if>
+            <if test="graduationTime != null">graduation_time,</if>
+            <if test="major != null">major,</if>
+            <if test="address != null">address,</if>
+            <if test="mainDeptId != null">main_dept_id,</if>
+            <if test="mainDept != null">main_dept,</if>
+            <if test="postId != null">post_id,</if>
+            <if test="postName != null">post_name,</if>
+            <if test="whetherInterview != null">whether_interview,</if>
+            <if test="whetherEmploy != null">whether_employ,</if>
+            <if test="whetherCareer != null">whether_career,</if>
+            <if test="sourceFor != null">source_for,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="candiTime != null">#{candiTime},</if>
+            <if test="position != null and position != ''">#{position},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="sex != null and sex != ''">#{sex},</if>
+            <if test="certNo != null and certNo != ''">#{certNo},</if>
+            <if test="birthTime != null">#{birthTime},</if>
+            <if test="age != null">#{age},</if>
+            <if test="nationType != null">#{nationType},</if>
+            <if test="marriage != null">#{marriage},</if>
+            <if test="telephone != null">#{telephone},</if>
+            <if test="joinWorkingTime != null">#{joinWorkingTime},</if>
+            <if test="politicalStatus != null">#{politicalStatus},</if>
+            <if test="highestEdu != null">#{highestEdu},</if>
+            <if test="graduateSchool != null">#{graduateSchool},</if>
+            <if test="graduationTime != null">#{graduationTime},</if>
+            <if test="major != null">#{major},</if>
+            <if test="address != null">#{address},</if>
+            <if test="mainDeptId != null">#{mainDeptId},</if>
+            <if test="mainDept != null">#{mainDept},</if>
+            <if test="postId != null">#{postId},</if>
+            <if test="postName != null">#{postName},</if>
+            <if test="whetherInterview != null">#{whetherInterview},</if>
+            <if test="whetherEmploy != null">#{whetherEmploy},</if>
+            <if test="whetherCareer != null">#{whetherCareer},</if>
+            <if test="sourceFor != null">#{sourceFor},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHrCandidateInfo" parameterType="HrCandidateInfo">
+        update hr_candidate_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="candiTime != null">candi_time = #{candiTime},</if>
+            <if test="position != null and position != ''">position = #{position},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="sex != null and sex != ''">sex = #{sex},</if>
+            <if test="certNo != null and certNo != ''">cert_no = #{certNo},</if>
+            <if test="birthTime != null">birth_time = #{birthTime},</if>
+            <if test="age != null">age = #{age},</if>
+            <if test="nationType != null">nation_type = #{nationType},</if>
+            <if test="marriage != null">marriage = #{marriage},</if>
+            <if test="telephone != null">telephone = #{telephone},</if>
+            <if test="joinWorkingTime != null">join_working_time = #{joinWorkingTime},</if>
+            <if test="politicalStatus != null">political_status = #{politicalStatus},</if>
+            <if test="highestEdu != null">highest_edu = #{highestEdu},</if>
+            <if test="graduateSchool != null">graduate_school = #{graduateSchool},</if>
+            <if test="graduationTime != null">graduation_time = #{graduationTime},</if>
+            <if test="major != null">major = #{major},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="mainDeptId != null">main_dept_id = #{mainDeptId},</if>
+            <if test="mainDept != null">main_dept = #{mainDept},</if>
+            <if test="postId != null">post_id = #{postId},</if>
+            <if test="postName != null">post_name = #{postName},</if>
+            <if test="whetherInterview != null">whether_interview = #{whetherInterview},</if>
+            <if test="whetherEmploy != null">whether_employ = #{whetherEmploy},</if>
+            <if test="whetherCareer != null">whether_career = #{whetherCareer},</if>
+            <if test="sourceFor != null">source_for = #{sourceFor},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where candidate_id = #{candidateId}
+    </update>
+
+    <delete id="deleteHrCandidateInfoById" parameterType="Long">
+        delete from hr_candidate_info where candidate_id = #{candidateId}
+    </delete>
+
+    <delete id="deleteHrCandidateInfoByIds" parameterType="String">
+        delete from hr_candidate_info where candidate_id in 
+        <foreach item="candidateId" collection="array" open="(" separator="," close=")">
+            #{candidateId}
+        </foreach>
+    </delete>
+
+</mapper>

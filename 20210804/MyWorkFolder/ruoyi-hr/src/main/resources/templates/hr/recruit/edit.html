@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改招聘申请')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-recruit-edit" th:object="${hrRecruit}">
+            <input name="recruitId" th:field="*{recruitId}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">申请人：</label>
+                <div class="col-sm-8">
+                    <input  readonly="true" name="userName" th:field="*{user.userName}" class="form-control" type="text" required>
+                    <input name="userId" id="userId"  th:field="*{userId}" type="hidden">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">申请部门：</label>
+                <div class="col-sm-8">
+                    <input  readonly="true" name="deptName" th:field="*{dept.deptName}" class="form-control" type="text" onclick="selectDeptTree()" id="treeName" required>
+					<input name="deptId" id="treeId"  th:field="*{deptId}" type="hidden">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">需求岗位 ：</label>
+                <div class="col-sm-8">
+                    <input name="needPost" th:field="*{needPost}" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">期望到岗时间：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <input name="arrivalTime" th:value="${#dates.format(hrRecruit.arrivalTime, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">需求人数：</label>
+                <div class="col-sm-8">
+                    <input name="needPeople" th:field="*{needPeople}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">岗位现有人数：</label>
+                <div class="col-sm-8">
+                    <input name="existingPeople" th:field="*{existingPeople}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">岗位职责要求：</label>
+                <div class="col-sm-8">
+                    <textarea name="requirements" class="form-control">[[*{requirements}]]</textarea>
+                </div>
+            </div>
+            
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <script type="text/javascript">
+        var prefix = ctx + "hr/recruit";
+        $("#form-recruit-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-recruit-edit').serialize());
+            }
+        }
+
+        $("input[name='arrivalTime']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+    </script>
+</body>
+</html>

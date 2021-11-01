@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('个人日历列表')" />
+</head>
+<body class="gray-bg">
+	<div class="container-div">
+    	<div class="row">
+    		<div class="col-sm-12 search-collapse" id="mycol">
+				<table
+				        id="table"
+				        data-toggle="table"
+				       >
+				    <thead>
+				    </thead>
+				</table>
+				
+    		</div>
+    	</div>
+    </div>
+    <div class="container-div">
+    	<div class="row">
+    		<div class="col-sm-12 search-collapse" id="mycol2">
+				<table
+				        id="table2"
+				        data-toggle="table"
+				       >
+				    <thead>
+				    </thead>
+				</table>
+				颜色加深说明当日有预定日程
+    		</div>
+    	</div>
+    </div>
+     <div class="container-div">
+        <div class="row">
+            
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="hrm:diary:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="hrm:diary:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAllAndReload()" shiro:hasPermission="hrm:diary:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="hrm:diary:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>事件标题：</label>
+                                <input type="text" name="diaryTitle"/>
+                            </li>
+                            <li>
+                                <label>日期：</label>
+                                <select name="dayOfWeek" th:with="type=${@dict.getType('date_of_week')}" >
+                                <option style="display: none"></option>
+                				<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                				</select>
+                            </li>
+                            <li>
+                                <label>事件信息：</label>
+                                <input type="text" name="diaryInfo"/>
+                            </li>
+                            <li>
+                                <label>时间段：</label>
+                                <input type="text" name="diaryPeriod"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+            
+            
+        </div>
+    </div>
+    
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('hrm:diary:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('hrm:diary:remove')}]];
+        var prefix = ctx + "hrm/diary";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "个人日历",
+                onLoadSuccess: function(){
+                	
+                	loadTable();
+                	loadTable2();
+
+                },
+                sortName: "diaryPeriod",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'diaryId',
+                    title: '事件ID',
+                    visible: false
+                },
+                {
+                    field: 'aboutUser',
+                    title: '用户名',
+                    visible:false
+                },
+                {
+                    field: 'diaryTitle',
+                    title: '事件标题'
+                },
+                {
+                    field: 'diaryInfo',
+                    title: '事件信息'
+                },
+                {
+                    field: 'dayOfWeek',
+                    title: '日期',
+                    formatter: function(value){
+                    	if(value==1)return "星期日"
+                    	if(value==2)return "星期一"
+                    	if(value==3)return "星期二"
+                    	if(value==4)return "星期三"
+                    	if(value==5)return "星期四"
+                    	if(value==6)return "星期五"
+                    	if(value==7)return "星期六"
+                    	return "什么"
+                    }
+                    
+                },
+                {
+                    field: 'diaryPeriod',
+                    title: '时间段',
+                    sortable:true
+                }, 
+                {
+                    title: '操作',
+                    align: 'center',
+                    visible:false,
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.eventId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.eventId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+        
+        function loadTable(){
+        	//bootstrap自动刷的空表格信息，我得给他取掉因为我不想要
+        	//整体架构
+        	//$(".select-table").css("height",400)
+        	$(".container-div").css("width","48%").css("float","left").css("padding","1%").css("margin","1%").css("height","510");
+        	$("#mycol").css("height",500).css("background","#1f1e33");
+        	$("#table thead").empty()
+        	$("#table .no-records-found").hide()
+        	for(i=0;i<10;i++){
+        		$("#table thead").append("<tr class=tr"+i+"></tr>")
+        	}
+        	$("#table thead tr").each(function(){
+        		for(i=0;i<8;i++){
+        			$(this).append("<th class=th"+i+"></th>")
+            	}
+        	})
+        	$("tr").css("height",50);
+        	$("th").css("width",40);
+        	$(".tr5 .th0").attr("colspan",8);
+        	$(".tr5").css("height",15);
+        	for(i=1;i<8;i++){
+        		$(".tr5 .th"+i).remove()
+        	}
+        	
+//         	$(".tr20 .th3").css("background","red")
+//         	$(".tr20 .th3").attr("rowspan","3")
+//         	$(".tr21 .th3").remove()
+//         	$(".tr22 .th3").remove()
+
+			//架构细节
+        	var list = [[${list}]];
+        	var ofWeek = [[${ofWeek}]];
+        	var numDays = [[${numDays}]];
+        	/* console.log(list);
+        	console.log(ofWeek);
+        	console.log(numDays); */
+        	var colors = ["#9ff","#f9f","#ff9","#99f","#f99","#9f9"];
+        	var tableHeads = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+        	var pointer = 0;//color pointer
+        	$(".tr0 .th0").text("上午下午工作制")
+        	for(i=1;i<8;i++){
+    			$(".tr0 .th"+i).text(tableHeads[i-1])
+        	}
+        	for(i=1;i<10;i++){
+        		var time;
+        		if(i<5)time=i
+        		else time=i-1
+        		if(i!=5)$(".tr"+i+" .th0").text(time).css("text-align","center").css("vertical-align","middle")
+        		else $(".tr"+i+" .th0").css("background","#dddddd")
+        	}
+        	
+        	//架构数据
+        	for(elem of list){
+        		
+        		
+        		var dateCol = elem.dayOfWeek;
+        		var startBlock = elem.diaryPeriod;
+        		if(startBlock>=5)startBlock++;
+        		//console.log(list)
+        		$(".tr"+startBlock+" .th"+dateCol).attr("title",elem.diaryInfo);
+            	$(".tr"+startBlock+" .th"+dateCol).css("background",colors[pointer%6]);
+            	$(".tr"+startBlock+" .th"+dateCol).text(elem.diaryTitle);
+            	$(".tr"+startBlock+" .th"+dateCol).css("text-align","center");
+            	$(".tr"+startBlock+" .th"+dateCol).css("vertical-align","top");
+            	$(".tr"+startBlock+" .th"+dateCol).css("font-size","15px");
+            	pointer++;
+        			
+        		}
+        		
+        		
+        		
+        	
+        }
+        
+        function loadTable2(){
+        	//bootstrap自动刷的空表格信息，我得给他取掉因为我不想要
+        	//整体架构
+        	//$(".select-table").css("height",400)
+        	$(".container-div:eq(2)").css("width","100%").css("float","left");
+        	$("#mycol2").css("height",500).css("background","#1f1e33");
+        	$("#table2 thead").empty()
+        	$("#table2 .no-records-found").hide()
+        	for(i=0;i<6;i++){
+        		$("#table2 thead").append("<tr class=tr2_"+i+"></tr>")
+        	}
+        	$("#table2 thead tr").each(function(){
+        		for(i=0;i<7;i++){
+        			$(this).append("<th class=th2_"+i+"></th>")
+            	}
+        	})
+        	$("#table2 tr").css("height",70);
+        	$("#table2 th").css("width",40);
+        	
+        	
+//         	$(".tr20 .th3").css("background","red")
+//         	$(".tr20 .th3").attr("rowspan","3")
+//         	$(".tr21 .th3").remove()
+//         	$(".tr22 .th3").remove()
+
+			//架构细节
+        	var list = [[${list}]];
+        	var dayOfWeek = [[${ofWeek}]];
+        	var numDays = [[${numDays}]];
+//         	console.log(list);
+//         	console.log(dayOfWeek);
+//         	console.log(numDays);
+        	var colors = ["#9ff","#f9f","#ff9","#99f","#f99","#9f9"];
+        	var tableHeads = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+        	var pointer = 0;//color pointer
+        	for(i=0;i<7;i++){
+    			$(".tr2_0 .th2_"+i).text(tableHeads[i])
+        	}
+        	for(i=1;i<numDays+1;i++){
+        		var week = (i+dayOfWeek-2)/7+1;
+        		var day = (i+dayOfWeek-2)%7;
+        		//console.log("week"+parseInt(week));
+        		//console.log("day"+day);
+        		$(".tr2_"+parseInt(week)+" .th2_"+day).text((i)).css("text-align","center").css("vertical-align","middle");
+        	}
+        	
+        	//架构数据
+        	var dup = [];
+        	for(elem of list){
+        		
+        		
+        		var dateCol = elem.dayOfWeek;
+        		//console.log(dateCol)
+        		//console.log(dup)
+        		var flag = true;
+        		//原来var a in list取得是序号啊，跟python用法不一样。
+        		for(var d of dup){
+        			if(d==dateCol){
+        				flag=false;
+        				console.log(d+"=="+dateCol)
+        			}
+        		}
+        		//console.log(flag)
+        		if(!flag)continue;
+        		dup.push(dateCol);
+        		dateCol-=1
+        		$("tr[class^=tr2_][class!=tr2_0] .th2_"+dateCol).css("background","#777777").css("color","black");
+            	$("tr[class^=tr2_][class!=tr2_0] .th2_"+dateCol).css("text-align","center");
+            	$("tr[class^=tr2_][class!=tr2_0] .th2_"+dateCol).css("vertical-align","middle");
+            	$("tr[class^=tr2_][class!=tr2_0] .th2_"+dateCol).css("font-size","15px");
+        		}
+        }
+    	
+    	
+    	
+    </script>
+</body>
+</html>

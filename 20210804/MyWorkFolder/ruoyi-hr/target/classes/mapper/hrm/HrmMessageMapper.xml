@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hrm.mapper.HrmMessageMapper">
+    
+    <resultMap type="HrmMessage" id="HrmMessageResult">
+        <result property="messageId"    column="message_id"    />
+        <result property="userSend"    column="user_send"    />
+        <result property="userReceive"    column="user_receive"    />
+        <result property="messageTitle"    column="message_title"    />
+        <result property="message"    column="message"    />
+        <result property="read"    column="read"    />
+        <result property="isRefresh"    column="is_refresh"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+		<result property="readTime" column="read_time"/>
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectHrmMessageVo">
+        select message_id, user_send, user_receive, message_title, message, `read`, is_refresh, create_by, create_time, update_by, update_time, read_time, remark from hrm_message
+    </sql>
+
+    <select id="selectHrmMessageList" parameterType="HrmMessage" resultMap="HrmMessageResult">
+        <include refid="selectHrmMessageVo"/>
+        <where>  
+            <if test="userSend != null  and userSend != ''"> and user_send like concat('%', #{userSend}, '%')</if>
+            <if test="userReceive != null  and userReceive != ''"> and user_receive like concat('%', #{userReceive}, '%')</if>
+            <if test="messageTitle != null  and messageTitle != ''"> and message_title like concat('%', #{messageTitle}, '%')</if>
+            <if test="message != null  and message != ''"> and message like concat('%', #{message}, '%')</if>
+            <if test="read != null  and read != ''"> and `read` = #{read}</if>
+            <if test="isRefresh != null  and isRefresh != ''"> and is_refresh = #{isRefresh}</if>
+        </where>
+    </select>
+    
+    <select id="selectHrmMessageById" parameterType="Long" resultMap="HrmMessageResult">
+        <include refid="selectHrmMessageVo"/>
+        where message_id = #{messageId}
+    </select>
+        
+    <insert id="insertHrmMessage" parameterType="HrmMessage" useGeneratedKeys="true" keyProperty="messageId">
+        insert into hrm_message
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userSend != null &amp;&amp;userSend!=''">user_send,</if>
+            <if test="userReceive != null&amp;&amp;userReceive!=''">user_receive,</if>
+            <if test="messageTitle != null">message_title,</if>
+            <if test="message != null">message,</if>
+            <if test="read != null">`read`,</if>
+            <if test="isRefresh != null">is_refresh,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+			<if test="readTime != null">read_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userSend != null and userSend != ''">#{userSend},</if>
+            <if test="userReceive != null and userReceive !=''">#{userReceive},</if>
+            <if test="messageTitle != null">#{messageTitle},</if>
+            <if test="message != null">#{message},</if>
+            <if test="read != null">#{read},</if>
+            <if test="isRefresh != null">#{isRefresh},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+			<if test="readTime != null">#{readTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHrmMessage" parameterType="HrmMessage">
+        update hrm_message
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userSend != null and userSend != ''">user_send = #{userSend},</if>
+            <if test="userReceive != null">user_receive = #{userReceive},</if>
+            <if test="messageTitle != null">message_title = #{messageTitle},</if>
+            <if test="message != null">message = #{message},</if>
+            <if test="read != null">`read` = #{read},</if>
+            <if test="isRefresh != null">is_refresh = #{isRefresh},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+			<if test="readTime != null">read_time = #{readTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where message_id = #{messageId}
+    </update>
+
+    <delete id="deleteHrmMessageById" parameterType="Long">
+        delete from hrm_message where message_id = #{messageId}
+    </delete>
+
+    <delete id="deleteHrmMessageByIds" parameterType="String">
+        delete from hrm_message where message_id in 
+        <foreach item="messageId" collection="array" open="(" separator="," close=")">
+            #{messageId}
+        </foreach>
+    </delete>
+
+	<sql id="selectHrmMessageVo2">
+        select message_id, user_send, user_receive, message_title, message, `read`, is_refresh, create_by, create_time, update_by, update_time, read_time, remark from hrm_message_copy1
+    </sql>
+
+    <select id="selectHrmMessageList2" parameterType="HrmMessage" resultMap="HrmMessageResult">
+        <include refid="selectHrmMessageVo2"/>
+        <where>  
+            <if test="userSend != null  and userSend != ''"> and user_send like concat('%', #{userSend}, '%')</if>
+            <if test="userReceive != null  and userReceive != ''"> and user_receive like concat('%', #{userReceive}, '%')</if>
+            <if test="messageTitle != null  and messageTitle != ''"> and message_title like concat('%', #{messageTitle}, '%')</if>
+            <if test="message != null  and message != ''"> and message like concat('%', #{message}, '%')</if>
+            <if test="read != null  and read != ''"> and `read` = #{read}</if>
+            <if test="isRefresh != null  and isRefresh != ''"> and is_refresh = #{isRefresh}</if>
+        </where>
+    </select>
+    
+    <select id="selectHrmMessageById2" parameterType="Long" resultMap="HrmMessageResult">
+        <include refid="selectHrmMessageVo2"/>
+        where message_id = #{messageId}
+    </select>
+        
+    <insert id="insertHrmMessage2" parameterType="HrmMessage" useGeneratedKeys="true" keyProperty="messageId">
+        insert into hrm_message_copy1
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userSend != null &amp;&amp;userSend!=''">user_send,</if>
+            <if test="userReceive != null&amp;&amp;userReceive!=''">user_receive,</if>
+            <if test="messageTitle != null">message_title,</if>
+            <if test="message != null">message,</if>
+            <if test="read != null">`read`,</if>
+            <if test="isRefresh != null">is_refresh,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+			<if test="readTime != null">read_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userSend != null and userSend != ''">#{userSend},</if>
+            <if test="userReceive != null and userReceive !=''">#{userReceive},</if>
+            <if test="messageTitle != null">#{messageTitle},</if>
+            <if test="message != null">#{message},</if>
+            <if test="read != null">#{read},</if>
+            <if test="isRefresh != null">#{isRefresh},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+			<if test="readTime != null">#{readTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHrmMessage2" parameterType="HrmMessage">
+        update hrm_message_copy1
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userSend != null and userSend != ''">user_send = #{userSend},</if>
+            <if test="userReceive != null">user_receive = #{userReceive},</if>
+            <if test="messageTitle != null">message_title = #{messageTitle},</if>
+            <if test="message != null">message = #{message},</if>
+            <if test="read != null">`read` = #{read},</if>
+            <if test="isRefresh != null">is_refresh = #{isRefresh},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+			<if test="readTime != null">read_time = #{readTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where message_id = #{messageId}
+    </update>
+
+    <delete id="deleteHrmMessageById2" parameterType="Long">
+        delete from hrm_message_copy1 where message_id = #{messageId}
+    </delete>
+
+    <delete id="deleteHrmMessageByIds2" parameterType="String">
+        delete from hrm_message_copy1 where message_id in 
+        <foreach item="messageId" collection="array" open="(" separator="," close=")">
+            #{messageId}
+        </foreach>
+    </delete>
+
+</mapper>

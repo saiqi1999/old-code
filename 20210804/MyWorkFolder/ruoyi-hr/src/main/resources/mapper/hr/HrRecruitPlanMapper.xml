@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hr.mapper.HrRecruitPlanMapper">
+    
+    <resultMap type="HrRecruitPlan" id="HrRecruitPlanResult">
+        <result property="recruitPlanId"    column="recruit_plan_id"    />
+        <result property="recruitId"    column="recruit_id"    />
+        <result property="planCompleteTime"    column="plan_complete_time"    />
+        <result property="pepCompleteNum"    column="pep_complete_num"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectHrRecruitPlanVo">
+        select recruit_plan_id, recruit_id, plan_complete_time, pep_complete_num, create_by, create_time, update_by, update_time, remark from hr_recruit_plan
+    </sql>
+
+    <select id="selectHrRecruitPlanList" parameterType="HrRecruitPlan" resultMap="HrRecruitPlanResult">
+        <include refid="selectHrRecruitPlanVo"/>
+        <where>  
+            <if test="recruitId != null "> and recruit_id = #{recruitId}</if>
+            <if test="planCompleteTime != null "> and plan_complete_time = #{planCompleteTime}</if>
+            <if test="pepCompleteNum != null "> and pep_complete_num = #{pepCompleteNum}</if>
+        </where>
+    </select>
+    
+    <select id="selectHrRecruitPlanById" parameterType="Long" resultMap="HrRecruitPlanResult">
+        <include refid="selectHrRecruitPlanVo"/>
+        where recruit_plan_id = #{recruitPlanId}
+    </select>
+        
+    <insert id="insertHrRecruitPlan" parameterType="HrRecruitPlan" useGeneratedKeys="true" keyProperty="recruitPlanId">
+        insert into hr_recruit_plan
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="recruitId != null ">recruit_id,</if>
+            <if test="planCompleteTime != null ">plan_complete_time,</if>
+            <if test="pepCompleteNum != null ">pep_complete_num,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="recruitId != null ">#{recruitId},</if>
+            <if test="planCompleteTime != null ">#{planCompleteTime},</if>
+            <if test="pepCompleteNum != null ">#{pepCompleteNum},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHrRecruitPlan" parameterType="HrRecruitPlan">
+        update hr_recruit_plan
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="recruitId != null ">recruit_id = #{recruitId},</if>
+            <if test="planCompleteTime != null ">plan_complete_time = #{planCompleteTime},</if>
+            <if test="pepCompleteNum != null ">pep_complete_num = #{pepCompleteNum},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+        </trim>
+        where recruit_plan_id = #{recruitPlanId}
+    </update>
+
+    <delete id="deleteHrRecruitPlanById" parameterType="Long">
+        delete from hr_recruit_plan where recruit_plan_id = #{recruitPlanId}
+    </delete>
+
+    <delete id="deleteHrRecruitPlanByIds" parameterType="String">
+        delete from hr_recruit_plan where recruit_plan_id in 
+        <foreach item="recruitPlanId" collection="array" open="(" separator="," close=")">
+            #{recruitPlanId}
+        </foreach>
+    </delete>
+    
+</mapper>

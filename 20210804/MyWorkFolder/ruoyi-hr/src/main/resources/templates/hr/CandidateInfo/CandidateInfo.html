@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('应聘人员信息列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li class="select-time">
+                                <label>应聘时间：</label>
+                                <input type="text" class="time-input" id="startTime1" placeholder="开始时间" name="params[beginCandiTime]"/>
+                                <span>-</span>
+                                <input type="text" class="time-input" id="endTime1" placeholder="结束时间" name="params[endCandiTime]"/>
+                            </li>
+                            <li>
+                                <label>应聘职位：</label>
+                                <input type="text" name="position"/>
+                            </li>
+                            <li>
+                                <label>姓名：</label>
+                                <input type="text" name="name"/>
+                            </li>
+                            <li>
+                                <label>用户性别：</label>
+                                <select name="sex" th:with="type=${@dict.getType('sys_user_sex')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li class="select-time">
+                                <label>出生日期：</label>
+                                <input type="text" class="time-input" id="startTime2" placeholder="开始时间" name="params[beginBirthTime]"/>
+                                <span>-</span>
+                                <input type="text" class="time-input" id="endTime2" placeholder="结束时间" name="params[endBirthTime]"/>
+                            </li>
+                            <li>
+                                <label>年龄：</label>
+                                <input type="text" name="age"/>
+                            </li>
+                            <li>
+                                <label>民族：</label>
+                                <select name="nationType" th:with="type=${@dict.getType('nation_type')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>婚姻状况：</label>
+                                <select name="marriage" th:with="type=${@dict.getType('hr_marital')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>政治面貌：</label>
+                                <select name="politicalStatus" th:with="type=${@dict.getType('political_status')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>学历：</label>
+                                <select name="highestEdu" th:with="type=${@dict.getType('highest_edu')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>招聘部门：</label>
+                                 <input name="mainDeptId" class="form-control" id="treeId" type="hidden">
+                    		     <input name="mainDept" onclick="selectDeptTree()" id="treeName" type="text"  class="form-control">
+                            </li>
+                            <li>
+                                <label>推荐岗位：</label>
+                                <input name="postName" class="form-control" type="text"  onclick="selectPost()" id="postName" >
+								<input name="postId" id="postId"  type="hidden">
+                            </li>
+                            <li>
+                                <label>是否面试：</label>
+                                <select name="whetherInterview" th:with="type=${@dict.getType('sys_yes_no')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>是否录用：</label>
+                                <select name="whetherEmploy" th:with="type=${@dict.getType('sys_yes_no')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>是否入职：</label>
+                                <select name="whetherCareer" th:with="type=${@dict.getType('sys_yes_no')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>状态：</label>
+                                <select name="status" th:with="type=${@dict.getType('ding_status')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.addFull()" shiro:hasPermission="hr:CandidateInfo:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.editFull()" shiro:hasPermission="hr:CandidateInfo:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="hr:CandidateInfo:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="hr:CandidateInfo:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table" class="text-nowrap" ></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('hr:CandidateInfo:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('hr:CandidateInfo:remove')}]];
+        var sexDatas = [[${@dict.getType('sys_user_sex')}]];
+        var nationTypeDatas = [[${@dict.getType('nation_type')}]];
+        var marriageDatas = [[${@dict.getType('hr_marital')}]];
+        var politicalStatusDatas = [[${@dict.getType('political_status')}]];
+        var highestEduDatas = [[${@dict.getType('highest_edu')}]];
+        var whetherInterviewDatas = [[${@dict.getType('sys_yes_no')}]];
+        var whetherEmployDatas = [[${@dict.getType('sys_yes_no')}]];
+        var whetherCareerDatas = [[${@dict.getType('sys_yes_no')}]];
+        var statusDatas = [[${@dict.getType('ding_status')}]];
+        var prefix = ctx + "hr/CandidateInfo";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "应聘人员信息",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'candidateId',
+                    title: '应聘人员信息ID',
+                    visible: false
+                },
+                {
+                    field: 'candiTime',
+                    title: '应聘时间'
+                },
+                {
+                    field: 'position',
+                    title: '应聘职位'
+                },
+                {
+                    field: 'name',
+                    title: '姓名'
+                },
+                {
+                    field: 'sex',
+                    title: '用户性别',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(sexDatas, value);
+                    }
+                },
+                {
+                    field: 'certNo',
+                    title: '证件号码'
+                },
+                {
+                    field: 'birthTime',
+                    title: '出生日期'
+                },
+                {
+                    field: 'age',
+                    title: '年龄'
+                },
+                {
+                    field: 'nationType',
+                    title: '民族',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(nationTypeDatas, value);
+                    }
+                },
+                {
+                    field: 'marriage',
+                    title: '婚姻状况',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(marriageDatas, value);
+                    }
+                },
+                {
+                    field: 'telephone',
+                    title: '电话'
+                },
+                {
+                    field: 'joinWorkingTime',
+                    title: '首次参加工作时间'
+                },
+                {
+                    field: 'politicalStatus',
+                    title: '政治面貌',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(politicalStatusDatas, value);
+                    }
+                },
+                {
+                    field: 'highestEdu',
+                    title: '学历',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(highestEduDatas, value);
+                    }
+                },
+                {
+                    field: 'graduateSchool',
+                    title: '毕业院校'
+                },
+                {
+                    field: 'graduationTime',
+                    title: '毕业时间'
+                },
+                {
+                    field: 'major',
+                    title: '所学专业'
+                },
+                {
+                    field: 'address',
+                    title: '住址'
+                },
+                {
+                    field: 'mainDeptId',
+                    title: '招聘部门ID',
+                    visible: false
+                },
+                {
+                    field: 'mainDept',
+                    title: '招聘部门'
+                },
+                {
+                    field: 'postId',
+                    title: '推荐岗位ID',
+                    visible: false
+                },
+                {
+                    field: 'postName',
+                    title: '推荐岗位'
+                },
+                {
+                    field: 'whetherInterview',
+                    title: '是否面试',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(whetherInterviewDatas, value);
+                    }
+                },
+                {
+                    field: 'whetherEmploy',
+                    title: '是否录用',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(whetherEmployDatas, value);
+                    }
+                },
+                {
+                    field: 'whetherCareer',
+                    title: '是否入职',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(whetherCareerDatas, value);
+                    }
+                },
+                {
+                    field: 'sourceFor',
+                    title: '渠道来源'
+                },
+                {
+                    field: 'status',
+                    title: '状态',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(statusDatas, value);
+                    }
+                },
+                {
+                    field: 'remark',
+                    title: '备注'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.editFull(\'' + row.candidateId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.candidateId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+        
+        
+        function selectPost(){
+			$.modal.open("选择岗位", ctx + "system/post/select");
+        };
+        
+        /* 用户管理-新增-选择部门树 */
+        function selectDeptTree() {
+        	var treeId = $("#treeId").val();
+        	var deptId = $.common.isEmpty(treeId) ? "1" : $("#treeId").val();
+        	var url = ctx + "system/dept/selectDeptTree/" + deptId;
+			var options = {
+				title: '选择部门',
+				width: "380",
+				url: url,
+				callBack: doSubmit
+			};
+			$.modal.openOptions(options);
+		}
+		
+		function doSubmit(index, layero){
+			var tree = layero.find("iframe")[0].contentWindow.$._tree;
+			/* if ($.tree.notAllowParents(tree)) {} */
+				var body = layer.getChildFrame('body', index);
+    			$("#treeId").val(body.find('#treeId').val());
+    			$("#treeName").val(body.find('#treeName').val());
+    			layer.close(index);
+		}
+		
+		
+    </script>
+</body>
+</html>

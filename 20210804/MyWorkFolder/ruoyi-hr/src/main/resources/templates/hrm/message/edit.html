@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改站内信箱')" />
+    <th:block th:include="include :: bootstrap-fileinput-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-message-edit" th:object="${hrmMessage}">
+            <input name="messageId" th:field="*{messageId}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">发出人：</label>
+                <div class="col-sm-8">
+                    <input name="userSend" th:field="*{userSend}" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">接收人：</label>
+                <div class="col-sm-8">
+                    <input name="userReceive" th:field="*{userReceive}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">信息标题：</label>
+                <div class="col-sm-8">
+                    <input name="messageTitle" th:field="*{messageTitle}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">信息：</label>
+                <div class="col-sm-8">
+                    <textarea name="message" class="form-control">[[*{message}]]</textarea>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">状态：</label>
+                <div class="col-sm-8">
+                    <input name="read" th:field="*{read}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">附件上传：</label>
+                <div class="col-sm-8">
+                    <input id="file-Portrait" type="file" multiple="multiple" name="file">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-8">
+                    <textarea name="remark" class="form-control">[[*{remark}]]</textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: bootstrap-fileinput-js" />
+    <script th:src="@{/ruoyi/js/attachment.js}"></script>
+    <script th:inline="javascript">
+        var prefix = ctx + "hrm/message";
+        var businessId=$("#messageId").val();
+        $.file.initEditFiles("file-Portrait","hrm_message",businessId);
+        $("#form-message-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+            	/* console.log('--edit: serialized--');
+                console.log($('#form-message-edit').serialize());
+                $.operate.save(prefix + "/edit", $('#form-message-edit').serialize()); */
+            	$.ajax({
+                    cache : true,
+                    type : "post",
+                    dataType: "json",
+                    url : prefix + "/edit",
+                    data : $('#form-archives-edit').serialize(),
+                    async : false,
+                    success : function(data) {
+                        $.file.uploadFile("file-Portrait","hrm_message",businessId);
+                        $.operate.saveSuccess(data);
+                    }
+                }); 
+            }
+        }
+    </script>
+</body>
+</html>

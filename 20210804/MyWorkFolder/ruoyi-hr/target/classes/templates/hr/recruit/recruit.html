@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+<th:block th:include="include :: header('招聘申请列表')" />
+
+<style>
+body .workflow-skins .layui-layer-btn0,body .workflow-skins .layui-layer-btn1
+	{
+	border-color: #00b9a4;
+	background-color: #00b9a4;
+	color: #fff;
+}
+
+body .workflow-skins .layui-layer-btn2 {
+	border-color: #e32636;
+	background-color: #e32636;
+	color: #fff;
+}
+</style>
+</head>
+<body class="gray-bg">
+	<div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+							<li>
+								<p>申请人：</p> <input type="text" name="userName"  onclick="selectUserTree()" id="userName" />
+								<input type="text" hidden="true" name="userId"  id="userId">
+							</li>
+							<li>
+								<p>申请部门：</p> <input type="text" name="deptName"  onclick="selectDeptTree()" id="treeName" />
+								<input name="deptId" id="treeId"  type="text" hidden="true">
+							</li>
+							<li>
+								<p>需求岗位：</p> <input type="text" name="needPost" />
+							</li>
+							<li>
+								<p>需求人数：</p> <input type="text" name="needPeople" />
+							</li>
+							<li>
+								<p>现有人数：</p> <input type="text" name="existingPeople" />
+							</li>
+							<li><a class="btn btn-primary btn-rounded btn-sm"
+								onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm"
+								onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+
+			<div class="btn-group-sm" id="toolbar" role="group">
+				<a class="btn btn-success" onclick="$.operate.add()"
+					shiro:hasPermission="hr:recruit:add"> <i class="fa fa-plus"></i>
+					添加
+				</a> <a class="btn btn-primary single disabled"
+					onclick="$.operate.edit()" shiro:hasPermission="hr:recruit:edit">
+					<i class="fa fa-edit"></i> 修改
+				</a> <a class="btn btn-danger multiple disabled"
+					onclick="$.operate.removeAll()"
+					shiro:hasPermission="hr:recruit:remove"> <i
+					class="fa fa-remove"></i> 删除
+				</a> <a class="btn btn-warning" onclick="$.table.exportExcel()"
+					shiro:hasPermission="hr:recruit:export"> <i
+					class="fa fa-download"></i> 导出
+				</a>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+	<th:block th:include="include :: footer" />
+	<script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('hr:recruit:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('hr:recruit:remove')}]];
+        var prefix = ctx + "hr/recruit";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "招聘申请",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field : 'recruitId', 
+                    title : '招聘申请ID',
+                    visible: false
+                },
+                {
+                    field : 'userId', 
+                    title : '申请人ID',
+                    visible: false
+                },
+                {
+                    field : 'deptId', 
+                    title : '申请部门ID',
+                    visible: false
+                },
+                {
+                    field : 'user.userName', 
+                    title : '申请人'
+                },
+                {
+		            field: 'dept.deptName',
+		            title: '申请部门'
+		        },
+                {
+                    field : 'needPost', 
+                    title : '需求岗位'
+                },
+                {
+                    field : 'needPeople', 
+                    title : '需求人数'
+                },
+                {
+                    field : 'existingPeople', 
+                    title : '岗位现有人数'
+                },
+                {
+                    field : 'requirements', 
+                    title : '岗位职责要求'
+                },
+                {
+                    field : 'arrivalTime', 
+                    title : '期望到岗时间'
+                },
+                {
+                    field : 'processInstanceId', 
+                    title : '流程实例ID',
+                    visible: false
+                },
+                {
+                    field : 'status', 
+                    title : '流程状态 '
+                },
+                {
+                    field : 'remark', 
+                    title : '备注'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        if(row.status=='0')
+		            	{
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="start(\'' + row.recruitId + '\')"><i class="fa fa-edit"></i>启动流程</a> ');
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.recruitId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.recruitId + '\')"><i class="fa fa-remove"></i>删除</a>');
+		            	}else{
+			            	 actions.push('<a class="btn btn-success btn-xs ' + '" href="javascript:void(0);" onclick="detail(\'' + row.processInstanceId + '\')" ><i class="fa fa-edit"></i>流程详情</a> '); 
+			            	}
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+        
+        function start(id) {
+            $.modal.confirm("确认要启动该流程吗？", function () {
+                var url = prefix + "/start/" + id;
+                $.operate.get(url);
+            });
+        };
+        
+        function detail(processInstanceId) {
+			var url = prefix + "/detail/" + processInstanceId;
+			openDetail("流程详情", url);
+		};
+		
+		function openDetail(title, url, width, height) {
+
+			//如果是移动端，就使用自适应大小弹窗
+			if (navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)) {
+				width = 'auto';
+				height = 'auto';
+			}
+			if ($.common.isEmpty(title)) {
+				title = false;
+			}
+			if ($.common.isEmpty(url)) {
+				url = "/404.html";
+			}
+			if ($.common.isEmpty(width)) {
+				width = 800;
+			}
+			if ($.common.isEmpty(height)) {
+				height = ($(window).height() - 50);
+			}
+			var index = layer.open({
+				skin : 'workflow-skins',
+				type : 2,
+				area : [ width + 'px', height + 'px' ],
+				fix : false,
+				//不固定
+				maxmin : true,
+				shade : 0.3,
+				title : title,
+				content : url,
+				btn : [ '流程跟踪', '审批记录', '关闭' ],
+				// 弹层外区域关闭
+				shadeClose : true,
+				yes : function(index, layero) {
+					var iframeWin = layero.find('iframe')[0];
+					iframeWin.contentWindow.doFlowDiagram(index, layero);
+				},
+				btn2 : function(index, layero) {
+					var iframeWin = layero.find('iframe')[0];
+					iframeWin.contentWindow.doOpinion(index, layero);
+					return false;
+				},
+				cancel : function(index) {
+					return true;
+				}
+			});
+
+			layer.full(index);
+		};
+		
+		
+		
+		/*选择部门树*/
+        function selectDeptTree() {
+        	var deptId = $.common.isEmpty($("#treeId").val()) ? "1" : $("#treeId").val();
+            var url = ctx + "system/dept/selectDeptTree/" + deptId;
+		    var options = {
+				title: '选择部门',
+				width: "380",
+				url: url,
+				callBack: doSubmit
+			};
+			$.modal.openOptions(options);
+		}
+		
+		function doSubmit(index, layero){
+			var tree = layero.find("iframe")[0].contentWindow.$._tree;
+			/*不能选择根节点和父节点判断 if ($.tree.notAllowParents(tree)) {
+			} */
+    			var body = layer.getChildFrame('body', index);
+    			$("#treeId").val(body.find('#treeId').val());
+    			$("#treeName").val(body.find('#treeName').val());
+    			layer.close(index);
+    			
+		}
+		
+		
+		//人员树形选择器
+        function selectUserTree() {
+            var options = {
+                title: '人员选择',
+                width: "750",
+                url: ctx + "system/user/selectUserTree?selectedUserIds=" + $("#userId").val() + "&selectedUserNames=" + $("#userName").val() + "&multiSelectFlag=false",
+                callBack: doSelect
+            };
+            $.modal.openOptions(options);
+        }
+        
+        function doSelect(index, layero){
+            
+            var body = layer.getChildFrame('body', index);
+            
+            var userIds = "";
+            var userNames = "";
+            body.find("#multiselect_to option").each(function(){  //遍历所有option
+                var val = $(this).val();   //获取option值
+                var txt = $(this).text();  //获取option的文本内容
+                if(val!= '' && txt!=''){
+                    userIds = userIds + val + ",";
+                    userNames = userNames + txt + ",";
+                }
+            });
+            
+            userIds = userIds.substring(0,userIds.length-1);
+            userNames = userNames.substring(0,userNames.length-1);
+                
+               $("#userId").val(userIds);
+               $("#userName").val(userNames);
+               layer.close(index);
+        }
+		
+    </script>
+</body>
+</html>

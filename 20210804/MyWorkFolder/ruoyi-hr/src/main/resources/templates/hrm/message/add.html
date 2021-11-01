@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增站内信箱')" />
+    <th:block th:include="include :: bootstrap-fileinput-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-message-add">
+            <!-- <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">发出人：</label>
+                <div class="col-sm-8">
+                    <input name="userSend" class="form-control" type="text" required>
+                </div>
+            </div> -->
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">接收人：</label>
+                <div class="col-sm-8">
+					<input type="text" name="userReceive" class="form-control"  onclick="selectUserTree()" id="userName"  required>
+					<input type="hidden" name="userId"  id="userId">
+				</div>
+                <!-- <div class="col-sm-8">
+                    <input name="userReceive" class="form-control" type="text" required>
+                </div> -->
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">信息标题：</label>
+                <div class="col-sm-8">
+                    <input name="messageTitle" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">信息：</label>
+                <div class="col-sm-8">
+                    <textarea name="message" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">附件上传：</label>
+                <div class="col-sm-8">
+                    <input id="file-Portrait" type="file" multiple="multiple" name="file">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: bootstrap-fileinput-js" />
+    <script th:src="@{/ruoyi/js/attachment.js}"></script>
+    <script th:src="@{/ruoyi/js/hrm-js.js}"></script>
+    <script th:inline="javascript">
+    	$("textarea").css("height","202px");
+    	$.file.initAddFiles("file-Portrait");
+        var prefix = ctx + "hrm/message"
+        $("#form-message-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                //$.operate.save(prefix + "/add", $('#form-message-add').serialize());
+            	$.ajax({
+                    cache : true,
+                    type : "post",
+                    dataType: "json",
+                    url : prefix + "/add",
+                    data : $('#form-message-add').serialize(),
+                    async : false,
+                    success : function(data) {
+                    	/* console.log(data.businessId)
+                        $.file.uploadFile("file-Portrait","hrm_message",data.businessId); */
+                        console.log("serialize added")
+                        $.file2.uploadFile("file-Portrait","hrm_message",data.businessId)
+                    	/* var control = $('#file-Portrait'); 
+                        var businessType = "hrm_message";
+                        var businessId = data.businessId;
+                        var file = control.val();
+                        
+                        if(file != '' ){
+                            
+                            // 执行上传
+                            control.fileinput("upload");
+                            
+                            // 上传成功后的处理
+                            control.on("fileuploaded", function(event, outData) {
+                                 
+                                 var result = outData.response;
+                                 
+                                 var filePath = result.filePath;
+                                 var fileNameReal = result.fileNameReal;
+                                 var fileNameShow = result.fileNameShow;
+                                 var fileSize = result.fileSize;
+                                 
+                                 $.ajax({
+                                     
+                                    cache : true,
+                                    type : "POST",
+                                    url : prefix+"/save",
+                                    data : {
+                                        "businessType" : businessType,
+                                        "businessId" : businessId,
+                                        "filePath" : filePath,
+                                        "fileNameReal" : fileNameReal,
+                                        "fileNameShow" : fileNameShow,
+                                        "fileSize" : fileSize
+                                    },
+                                    async : false,
+                                    error : function(request) {
+                                    },
+                                    success : function(data) {
+                                    }
+                                 });
+                            })
+                        } */
+                        $.operate.saveSuccess(data);
+                    }
+                }); 
+            }
+        }
+        
+      //人员树形选择器
+        function selectUserTree() {
+            var options = {
+                title: '人员选择',
+                width: "750",
+                url: ctx + "system/user/selectUserTree?selectedUserIds=" + $("#userId").val() + "&selectedUserNames=" + $("#userName").val() + "&multiSelectFlag=false",
+                callBack: doSelect
+            };
+            $.modal.openOptions(options);
+        }
+        
+        function doSelect(index, layero){
+            
+            var body = layer.getChildFrame('body', index);
+            
+            var userIds = "";
+            var userNames = "";
+            body.find("#multiselect_to option").each(function(){  //遍历所有option
+                var val = $(this).val();   //获取option值
+                var txt = $(this).text();  //获取option的文本内容
+                if(val!= '' && txt!=''){
+                    userIds = userIds + val + ",";
+                    userNames = userNames + txt + ",";
+                }
+            });
+            
+            userIds = userIds.substring(0,userIds.length-1);
+            userNames = userNames.substring(0,userNames.length-1);
+                
+               $("#userId").val(userIds);
+               $("#userName").val(userNames);
+               layer.close(index);
+        }
+    </script>
+</body>
+</html>

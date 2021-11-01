@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('个人日历列表')" />
+</head>
+<body class="gray-bg">
+	<div class="container-div">
+    	<div class="row">
+    		<div class="col-sm-12 search-collapse" id="mycol">
+				<table
+				        id="table"
+				        data-toggle="table"
+				       >
+				    <thead>
+				    </thead>
+				</table>
+				
+    		</div>
+    		
+    	</div>
+    </div>
+     <div class="container-div">
+        <div class="row">
+            
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="hrm:calendar:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="hrm:calendar:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAllAndReload()" shiro:hasPermission="hrm:calendar:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="hrm:calendar:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+            
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>事件标题：</label>
+                                <input type="text" name="eventTitle"/>
+                            </li>
+                            <li>
+                                <label>日期：</label>
+                                <input type="text" class="time-input" placeholder="请选择日期" name="eventStartDate"/>
+                            </li>
+                            <li>
+                                <label>开始时间：</label>
+                                <input type="text" name="eventStartTime"/>
+                            </li>
+                            <li>
+                                <label>结束时间：</label>
+                                <input type="text" name="eventEndTime"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('hrm:calendar:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('hrm:calendar:remove')}]];
+        var prefix = ctx + "hrm/calendar";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "个人日历",
+                onLoadSuccess: function(){
+                	
+                	loadTable()
+
+                },
+                sortName: "eventStartDate",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'eventId',
+                    title: '事件ID',
+                    visible: false
+                },
+                {
+                    field: 'aboutUser',
+                    title: '用户名',
+                    visible:false
+                },
+                {
+                    field: 'eventTitle',
+                    title: '事件标题'
+                },
+                {
+                    field: 'eventInfo',
+                    title: '事件信息'
+                },
+                {
+                    field: 'eventStartDate',
+                    title: '日期',
+                    sortable:true
+                },
+                {
+                    field: 'eventStartTime',
+                    title: '开始时间'
+                },
+                {
+                    field: 'eventEndTime',
+                    title: '结束时间'
+                },
+                {
+                    field: 'remark',
+                    title: '备注',
+                    visible:false
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    visible:false,
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.eventId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.eventId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+        
+        function loadTable(){
+        	//bootstrap自动刷的空表格信息，我得给他取掉因为我不想要
+        	//整体架构
+        	$(".container-div").css("width","48%").css("float","left");
+        	$("#mycol").css("height",1000).css("background","#1f1e33");
+        	$("#table thead").empty()
+        	$("#table .no-records-found").hide()
+        	for(i=0;i<49;i++){
+        		$("#table thead").append("<tr class=tr"+i+"></tr>")
+        	}
+        	$("#table thead tr").each(function(){
+        		for(i=0;i<6;i++){
+        			$(this).append("<th class=th"+i+"></th>")
+            	}
+        	})
+        	$("tr").css("height",15);
+        	$("th").css("width",40);
+//         	$("#toolbar a").click(function(){
+//         		$("#table").bootstrapTable("refresh");
+//         	})
+        	
+//         	$(".tr20 .th3").css("background","red")
+//         	$(".tr20 .th3").attr("rowspan","3")
+//         	$(".tr21 .th3").remove()
+//         	$(".tr22 .th3").remove()
+
+			//架构细节
+        	var list = [[${list}]];
+        	var date = [[${date}]];
+        	var colors = ["#9ff","#f9f","#ff9","#99f","#f99","#9f9"];
+        	var pointer = 0;//color pointer
+        	$(".tr0 .th0").text("24小时工作制")
+        	for(i=1;i<6;i++){
+        		var theDay = parseInt(date.substr(8))+i-1
+        		if(theDay.toString().length==1)theDay = "-0"+theDay
+        		else theDay="-"+theDay
+    			$(".tr0 .th"+i).text(date.substr(0,7)+theDay)
+        	}
+        	for(i=1;i<49;i++){
+        		var time;
+        		if(i%2==1) time = parseInt(i/2) + ":00 ~ " + parseInt(i/2) + ":30"
+        		else time = (parseInt(i/2)-1) + ":30 ~ " + parseInt(i/2) + ":00"
+        		$(".tr"+i+" .th0").text(time)
+        	}
+        	
+        	//架构数据
+        	for(elem of list){
+        		/* $("#mycol").append("from JQ : ")
+        		$("#mycol").append(elem.eventStartDate)
+        		$("#mycol").append(" from ")
+        		$("#mycol").append(elem.eventStartTime)
+        		$("#mycol").append(" to ")
+        		$("#mycol").append(elem.eventEndTime) 
+        		$("#mycol").append(" col:"+dateCol+" start:"+startBlock+" length:"+length)
+        		$("#mycol").append("<br>")*/
+        		
+        		
+        		var dateCol = elem.eventStartDate.split("-")[2] - date.split("-")[2] +2;
+        		var startBlock = elem.eventStartTime.split(":")[0]*2+elem.eventStartTime.split(":")[1]/30 +1;
+        		var endBlock = elem.eventEndTime.split(":")[0]*2+elem.eventEndTime.split(":")[1]/30 +1;
+        		var length = endBlock-startBlock;
+        		
+        		
+        		if(length!=0){
+        			$(".tr"+startBlock+" .th"+dateCol).attr("rowspan",""+length);
+        			$(".tr"+startBlock+" .th"+dateCol).attr("title",elem.eventInfo);
+            		$(".tr"+startBlock+" .th"+dateCol).css("background",colors[pointer%6]);
+            		$(".tr"+startBlock+" .th"+dateCol).text(elem.eventTitle);
+            		$(".tr"+startBlock+" .th"+dateCol).css("text-align","center");
+            		$(".tr"+startBlock+" .th"+dateCol).css("vertical-align","top");
+            		$(".tr"+startBlock+" .th"+dateCol).css("font-size","15px");
+            		pointer++;
+        			for(i=startBlock+1;i<startBlock+length;i++){
+        				
+            			$(".tr"+i+" .th"+dateCol).remove();
+            		}
+        		}
+        		
+        		
+        		
+        	}
+        }
+        
+        
+        
+    	
+    	
+    	
+    </script>
+</body>
+</html>

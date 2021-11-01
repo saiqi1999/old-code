@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('人员录用列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>员工姓名：</label>
+                                <input type="text" name="employeeName"/>
+                            </li>
+                            <li>
+                                <label>员工性别：</label>
+                                <input type="text" name="gender"/>
+                            </li>
+                            <li>
+                                <label>婚姻状况：</label>
+                                <input type="text" name="marriage"/>
+                            </li>
+                            <li>
+                                <label>政治面貌：</label>
+                                <select name="politicalStatus">
+                                    <option value="">所有</option>
+                                    <option value="-1">代码生成请选择字典属性</option>
+                                </select>
+                            </li>
+                            
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="hrm:toEmploy:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="hrm:toEmploy:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="hrm:toEmploy:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="hrm:toEmploy:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('hrm:toEmploy:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('hrm:toEmploy:remove')}]];
+        var prefix = ctx + "hrm/toEmploy";
+        var options;
+		function function1(employeeId){
+			//alert(options.enrollUrl.replace("{id}", ""))
+			var url = $.common.isEmpty(employeeId) ? options.enrollUrl.replace("{id}", "") : options.enrollUrl.replace("{id}", employeeId);
+			$.modal.open("录用" + options.modalName, url);
+			//alert(1)
+		}
+        $(function() {
+            options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                enrollUrl: prefix + "/enroll/{id}",
+                viewUrl: prefix + "/view/{id}",
+                confirmUrl: prefix + "/confirm",
+                modalName: "人员录用",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'employeeId',
+                    title: '员工ID',
+                    visible: false
+                },
+                {
+                    field: 'employeeName',
+                    title: '员工姓名'
+                },
+                {
+                    field: 'loginName',
+                    title: '用户名',
+                    visible: false
+                },
+                {
+                    field: 'gender',
+                    title: '员工性别',
+                    visible: false
+                },
+                {
+                    field: 'birthday',
+                    title: '员工生日',
+                    visible: false
+                },
+                {
+                    field: 'comeFrom',
+                    title: '籍贯',
+                    visible: false
+                },
+                {
+                    field: 'nationality',
+                    title: '民族',
+                    visible: false
+                },
+                {
+                    field: 'marriage',
+                    title: '婚姻状况',
+                    visible: false
+                },
+                {
+                    field: 'politicalStatus',
+                    title: '政治面貌',
+                    visible: false
+                },
+                {
+                    field: 'idCardNumber',
+                    title: '身份证号',
+                    visible: false
+                },
+                {
+                    field: 'healthStatus',
+                    title: '健康状况',
+                    visible: false
+                },
+                {
+                    field: 'dateStartWorking',
+                    title: '参加工作时间',
+                    visible: false
+                },
+                {
+                    field: 'timeWorked',
+                    title: '工作年限'
+                },
+                {
+                    field: 'degree',
+                    title: '学历'
+                },
+                {
+                    field: 'university',
+                    title: '毕业院校',
+                    visible: false
+                },
+                {
+                    field: 'major',
+                    title: '专业'
+                },
+                {
+                    field: 'graduateTime',
+                    title: '毕业时间',
+                    visible: false
+                },
+                {
+                    field: 'foreignLanguage',
+                    title: '掌握外语',
+                    visible: false
+                },
+                {
+                    field: 'foreignLanguageLevel',
+                    title: '外语等级',
+                    visible: false
+                },
+                {
+                    field: 'computerSkill',
+                    title: '计算机操作',
+                    visible: false
+                },
+                {
+                    field: 'computerSkillLevel',
+                    title: '计算机操作等级',
+                    visible: false
+                },
+                {
+                    field: 'employeeRank',
+                    title: '员工职级',
+                    visible: false
+                },
+                {
+                    field: 'employeeLevel',
+                    title: '员工等级',
+                    visible: false
+                },
+                {
+                    field: 'certificate',
+                    title: '员工证书',
+                    visible: false
+                },
+                {
+                    field: 'resume',
+                    title: '教育简历',
+                    visible: false
+                },
+                {
+                    field: 'favorite',
+                    title: '特长爱好',
+                    visible: false
+                },
+                {
+                    field: 'emailAddress',
+                    title: '电子邮件'
+                },
+                {
+                    field: 'employeeAddress',
+                    title: '联系地址',
+                    visible: false
+                },
+                {
+                    field: 'phoneNumber',
+                    title: '联系电话',
+                    visible: false
+                },
+                {
+                    field: 'zipCode',
+                    title: '邮政编码',
+                    visible: false
+                },
+                {
+                    field: 'height',
+                    title: '身高',
+                    visible: false
+                },
+                {
+                    field: 'weight',
+                    title: '体重',
+                    visible: false
+                },
+                {
+                    field: 'bloodType',
+                    title: '血型',
+                    visible: false
+                },
+                {
+                    field: 'employeeOrder',
+                    title: '对工作要求',
+                    visible: false
+                },
+                {
+                    field: 'dateEnrolled',
+                    title: '入职日期',
+                    visible: false
+                },
+                {
+                    field: 'employeeDepartment',
+                    title: '员工部门',
+                    visible: false
+                },
+                {
+                    field: 'employeePost',
+                    title: '员工岗位',
+                    visible: false
+                },
+                {
+                    field: 'employeeType',
+                    title: '员工工种',
+                    visible: false
+                },
+                {
+                    field: 'employeeJob',
+                    title: '员工职务',
+                    visible: false
+                },
+                {
+                    field: 'employeeTitle',
+                    title: '员工职称',
+                    visible: false
+                },
+                {
+                    field: 'employeeStatus',
+                    title: '员工状态',
+                    visible: false
+                },
+                {
+                    field: 'baseSalary',
+                    title: '基础工资',
+                    visible: false
+                },
+                {
+                    field: 'wageCardBank',
+                    title: '工资卡开户银行',
+                    visible: false
+                },
+                {
+                    field: 'wageCardNumber',
+                    title: '工资卡账户',
+                    visible: false
+                },
+                {
+                    field: 'photo',
+                    title: '照片',
+                    visible: false
+                },
+                {
+                    field: 'otherRelationship',
+                    title: '其他关系',
+                    visible: false
+                },
+                {
+                    field: 'studyExperience',
+                    title: '学习经历',
+                    visible: false
+                },
+                {
+                    field: 'workingExperience',
+                    title: '工作经历',
+                    visible: false
+                },
+                {
+                    field: 'attachment',
+                    title: '附件',
+                    visible: false
+                },
+                {
+                    field: 'remark',
+                    title: '备注',
+                    visible: false
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.employeeId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.employeeId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        actions.push('<a class="btn btn-warning btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.view(\'' + row.employeeId + '\')"><i class="fa fa-edit"></i>查看</a> ');
+                        actions.push('<a class="btn btn-primary btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick=function1(\'' + row.employeeId + '\')><i class="fa fa-check"></i>录用</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

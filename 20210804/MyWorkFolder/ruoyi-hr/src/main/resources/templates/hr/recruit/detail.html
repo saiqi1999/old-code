@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:include="include :: header('招聘申请流程')" />
+<th:block th:include="include :: select2-css" />
+<th:block th:include="include :: datetimepicker-css" />
+<th:block th:include="include :: header('模态窗口')" />
+</head>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+
+		<form class="form-horizontal m" id="form-approve"
+			th:object="${hrRecruit}">
+
+			<input id="recruitId" name="recruitId" th:field="*{recruitId}" type="hidden"> 
+			
+		    <input id="processInstanceId" name="processInstanceId" th:field="*{processInstanceId}" type="hidden">
+		    
+			<input id="status" name="status" th:field="*{status}" type="hidden">
+			
+			<div class="form-group">
+				<label class="col-sm-3 control-label">申请人：</label>
+				<div class="col-sm-8">
+					<input name="userId" th:field="*{userId}" class="form-control"
+						type="text" readonly="true" required>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">申请部门：</label>
+				<div class="col-sm-8">
+					<input name="deptId" th:field="*{deptId}" class="form-control"
+						type="text"  readonly="true" required>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">需求岗位 ：</label>
+				<div class="col-sm-8">
+					<input name="needPost" th:field="*{needPost}" class="form-control"
+						type="text" readonly="true" required>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">期望到岗时间：</label>
+				<div class="col-sm-8">
+					<div class="input-group date">
+						<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+						<input readonly="true" name="arrivalTime"
+							th:value="${#dates.format(hrRecruit.arrivalTime, 'yyyy-MM-dd')}"
+							class="form-control" placeholder="yyyy-MM-dd" type="text">
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">需求人数：</label>
+				<div class="col-sm-8">
+					<input readonly="true" name="needPeople" th:field="*{needPeople}"
+						class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">岗位现有人数：</label>
+				<div class="col-sm-8">
+					<input readonly="true" name="existingPeople"
+						th:field="*{existingPeople}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">岗位职责要求：</label>
+				<div class="col-sm-8">
+					<textarea readonly="true" id="requirements" name="requirements"
+						class="form-control">[[*{requirements}]]</textarea>
+				</div>
+			</div>
+
+		</form>
+
+	</div>
+
+	<div th:include="include::footer"></div>
+	<th:block th:include="include :: select2-js" />
+	<th:block th:include="include :: datetimepicker-js" />
+	
+	<script type="text/javascript">
+		var prefix = ctx + "hr/recruit";
+
+		function doFlowDiagram() {
+			var pId = $("#processInstanceId").val();
+			var url =ctx+"uflo/diagram?processInstanceId=" + pId;
+			opendatail("流程跟踪", url);
+		};
+		
+		
+		function doOpinion() {
+			 var processInstanceId= $("#processInstanceId").val();
+			 var url = ctx + "mytask/todo/opinions/" + processInstanceId;
+			 opendatail("审批记录", url);
+		};
+		
+		function opendatail(title, url, width, height, callback) {
+    
+			// 如果是移动端，就使用自适应大小弹窗
+			if (navigator.userAgent
+					.match(/(iPhone|iPod|Android|ios)/i)) {
+				width = 'auto';
+				height = 'auto';
+			}
+			if ($.common.isEmpty(title)) {
+				title = false;
+			}
+			if ($.common.isEmpty(url)) {
+				url = "/404.html";
+			}
+			if ($.common.isEmpty(width)) {
+				width = 800;
+			}
+			if ($.common.isEmpty(height)) {
+				height = ($(window).height() - 50);
+			}
+			
+			layer.open({
+				type : 2,
+				area : [ width + 'px', height + 'px' ],
+				id: title, //防止重复弹出
+				fix : false,
+				// 不固定
+				maxmin : true,
+				shade : 0.3,
+				title : title,
+				content : url,
+				btn : [ '关闭' ],
+				// 弹层外区域关闭
+				shadeClose : true,
+				yes: function(index, layero) {
+       	        layer.close(index);
+       	    	},
+				cancel : function(index) {
+					return true;
+				}
+			});
+        };
+		
+		
+	</script>
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+<th:block th:include="include :: header('员工档案基本信息列表')" />
+</head>
+<body class="gray-bg">
+	<div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+							<li>
+								<p>员工姓名：</p> <input type="text" name="name" />
+							</li>
+							<li>
+								<p>员工性别：</p> <select name="gender"
+								th:with="type=${@dict.getType('sys_user_sex')}">
+									<option value="">所有</option>
+									<option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+										th:value="${dict.dictValue}"></option>
+							</select>
+							</li>
+							<li>
+								<p>
+								<p>婚姻状况：</p> <select name="marital"
+								th:with="type=${@dict.getType('hr_marital')}">
+									<option value="">所有</option>
+									<option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+										th:value="${dict.dictValue}"></option>
+							</select>
+							</li>
+							<li>
+								<p>状态：</p> <select name="status"
+								th:with="type=${@dict.getType('hr_emp_status')}">
+									<option value="">所有</option>
+									<option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+										th:value="${dict.dictValue}"></option>
+							</select>
+							</li>
+							<li>
+								<p>员工类别：</p> <select name="type"
+								th:with="type=${@dict.getType('hr_emp_type')}">
+									<option value="">所有</option>
+									<option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+										th:value="${dict.dictValue}"></option>
+							</select>
+							</li>
+
+							<!--  <li class="select-time">
+                                <p>毕业时间：</p>
+                                <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginGraduationDate]"/>
+                                <span>-</span>
+                                <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endGraduationDate]"/>
+                            </li> -->
+							<li><a class="btn btn-primary btn-rounded btn-sm"
+								onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm"
+								onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+
+			<div class="btn-group-sm" id="toolbar" role="group">
+			<!-- 	<a class="btn btn-success" onclick="$.operate.add()"
+					shiro:hasPermission="hr:employee:add"> <i class="fa fa-plus"></i>
+					添加
+				</a> <a class="btn btn-primary single disabled"
+					onclick="$.operate.edit()" shiro:hasPermission="hr:employee:edit">
+					<i class="fa fa-edit"></i> 修改
+				</a> <a class="btn btn-danger multiple disabled"
+					onclick="$.operate.removeAll()"
+					shiro:hasPermission="hr:employee:remove"> <i
+					class="fa fa-remove"></i> 删除 
+				</a> -->
+				<a class="btn btn-warning" onclick="$.table.exportExcel()"
+					shiro:hasPermission="hr:employee:export"> <i
+					class="fa fa-download"></i> 导出
+				</a> 
+				<a class="btn btn-success" onclick="empsyn()"> <i
+					class="fa fa-plus"></i> 同步花名册数据到员工档案
+				</a>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" class="text-nowrap"></table>
+			</div>
+		</div>
+	</div>
+	<th:block th:include="include :: footer" />
+	<script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('hr:employee:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('hr:employee:remove')}]];
+        var prefix = ctx + "hr/employee";
+        var sex = [[${@dict.getType('sys_user_sex')}]];
+        var marital = [[${@dict.getType('hr_marital')}]];
+        var empstatus = [[${@dict.getType('hr_emp_status')}]];
+        var emptype = [[${@dict.getType('hr_emp_type')}]];
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "员工档案基本信息",
+                fixedColumns: true,
+    		    fixedNumber: 6, 
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field : 'employeeId', 
+                    title : '员工ID',
+                    visible: false
+                },
+                {
+                    field : 'userId', 
+                    title : '用户ID',
+                    visible: false
+                    
+                },
+                {
+                    field : 'deptId', 
+                    title : '部门ID',
+                    visible: false
+                },
+                {
+                    field : 'employeeNo', 
+                    title : '员工编号',
+                    visible: false
+                },
+                {
+                    field : 'postId', 
+                    title : '员工岗位ID',
+                    visible: false
+                },
+                {
+                    field : 'positionLevel', 
+                    title : '岗位级别',
+                    visible: false
+                },
+                {
+                    field : 'name', 
+                    title : '员工姓名'
+                },
+                {
+                    field : 'gender', 
+                    title : '员工性别 ',
+                    formatter: function(value, row, index) {
+                		return $.table.selectDictLabel(sex, value);
+                	}
+                },
+                {
+                    field : 'birthday', 
+                    title : '员工出生日期'
+                },
+                {
+                    field : 'age', 
+                    title : '年龄'
+                },
+                {
+                    field : 'nation', 
+                    title : '民族'
+                },
+                {
+                    field : 'marital', 
+                    title : '婚姻状况',
+                    formatter: function(value, row, index) {
+                		return $.table.selectDictLabel(marital, value);
+                	}
+                },
+                {
+                    field : 'identyNo', 
+                    title : '身份证号'
+                },
+                {
+                    field : 'telephone', 
+                    title : '移动电话'
+                },
+                {
+                    field : 'email', 
+                    title : '电子邮箱'
+                },
+                {
+                    field : 'address', 
+                    title : '家庭住址'
+                },
+                {
+                    field : 'homesite', 
+                    title : '籍贯'
+                },
+                {
+                    field : 'status', 
+                    title : '状态',
+                    formatter: function(value, row, index) {
+                		return $.table.selectDictLabel(empstatus, value);
+                	}
+                },
+                {
+                    field : 'type', 
+                    title : '员工类别',
+                    formatter: function(value, row, index) {
+                		return $.table.selectDictLabel(emptype, value);
+                	}
+                },
+                {
+                    field : 'entryTime', 
+                    title : '入职时间'
+                },
+                {
+                    field : 'trialPeriod', 
+                },
+                {
+                    field : 'positiveTime', 
+                    title : '转正时间'
+                },
+                {
+                    field : 'firstWork', 
+                    title : '首次参加工作时间'
+                },
+                {
+                    field : 'departureTime', 
+                    title : '离职时间'
+                },
+                {
+                    field : 'jobSite', 
+                    title : '办公地点'
+                },
+                {
+                    field : 'workingYear', 
+                    title : '工龄'
+                },
+                {
+                    field : 'polity', 
+                    title : '政治面貌'
+                },
+                {
+                    field : 'positionId', 
+                    title : '技术职称ID'
+                },
+                {
+                    field : 'education', 
+                    title : '学历'
+                },
+                {
+                    field : 'school', 
+                    title : '毕业院校'
+                },
+                {
+                    field : 'major', 
+                    title : '所学专业'
+                },
+                {
+                    field : 'graduationDate', 
+                    title : '毕业时间'
+                },
+                {
+                    field : 'remark', 
+                    title : '备注'
+                }
+                /*,
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.employeeId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.employeeId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                } */]
+            };
+            $.table.init(options);
+        });
+        
+        function empsyn() {
+            $.modal.confirm("确认要同步员工花名册数据吗？", function () {
+                var url = prefix + "/empsyn";
+                $.operate.get(url);
+            });
+        }
+    </script>
+</body>
+</html>

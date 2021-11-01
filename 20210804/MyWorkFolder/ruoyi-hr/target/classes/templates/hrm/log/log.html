@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('个人驾驶舱列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <center>一个月内各模块操作次数：</center>
+                <table><thead></thead></table>
+                <center>点击可以前往</center>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        
+        var prefix = ctx + "hrm/log";
+
+        var list = [[${list}]]
+        var urlList = [[${urlList}]]
+        
+        for(key in list){
+        	value = list[key]
+        	console.log(key)
+        	$("thead").append("<tr><th link>"+key+"</th><th>"+value+"</th></tr>")
+        }
+        $("table").css("margin","auto")
+        $("tr").css("height",30).css("border","2px solid black");
+        $("th").css("width",250).css("border","2px solid black").css("text-align","center").css("vertical-align","middle");
+        console.log(list);
+        
+        $("th[link]").hover(
+        		function(){$(this).css("color","blue").css("cursor","pointer")},
+        		function(){$(this).css("color","grey")}
+        	).click(function(){
+        		console.log(urlList[$(this).text()])
+        		window.location.href=urlList[$(this).text()]
+        	})
+        
+    </script>
+</body>
+</html>

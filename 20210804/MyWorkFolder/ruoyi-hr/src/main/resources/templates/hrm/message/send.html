@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('站内信箱列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>发出人：</label>
+                                <input type="text" name="userSend"/>
+                            </li>
+                            <li>
+                                <label>接收人：</label>
+                                <input type="text" name="userReceive" readonly=true/>
+                            </li>
+                            <li>
+                                <label>信息标题：</label>
+                                <input type="text" name="messageTitle"/>
+                            </li>
+                            <li>
+                                <label>已读：</label>
+                                <input type="text" name="read"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="hrm:message:add">
+                    <i class="fa fa-plus"></i> 写信息
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="hrm:message:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+            
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:src="@{/ruoyi/js/hrm-js.js}"></script>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('hrm:message:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('hrm:message:remove')}]];
+        var prefix = ctx + "hrm/message";
+
+        $(function() {
+            var options = {
+                url: prefix + "/send",
+                listUrl: prefix + "/send",
+                sendUrl: prefix + "/send",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove2",
+                removeUrl1: prefix + "/remove",
+                removeUrl2: prefix + "/remove2",
+                exportUrl: prefix + "/export",
+                viewUrl: prefix+"/view2/{id}",
+                viewUrl1: prefix+"/view/{id}",
+                viewUrl2: prefix+"/view2/{id}",
+                modalName: "站内信箱",
+//                 sortName: "createTime",
+                /* onLoadSuccess: function(){
+                	$("tr[data-index]:has(td:eq(6))").each(function(){
+            			if($(this).find("td:eq(5)").html()=="0")$(this).css("background","#ff7")
+            		})
+                }, */
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'messageId',
+                    title: '站内信ID',
+                    visible: false
+                },
+                {
+                    field: 'userSend',
+                    title: '发出人',
+                    
+                },
+                {
+                    field: 'userReceive',
+                    title: '接收人'
+                },
+                {
+                    field: 'messageTitle',
+                    title: '信息标题'
+                },
+                {
+                    field: 'message',
+                    title: '信息'
+                },
+                {
+                    field: 'read',
+                    title: '读取状态'
+                },
+				{
+                	field: 'readTime',
+                	title: '读取时间'
+				},                
+                {
+                    field: 'createTime',
+                    title: '发件时间',
+                    /* sortable:true,
+                    sorter: function(valA,valB){
+                    	console.log("--sorter--")
+                    	console.log(valA)
+                    	var strA = String(valA)
+                    	var strB = String(valB)
+                    	console.log(strA.length())
+                    	return -1
+                    } */
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.messageId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        actions.push('<a class="btn btn-warning btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.myoperate.view(\'' + row.messageId + '\')"><i class="fa fa-upload"></i>详情</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+         /* $(function(){
+        	//.log('BBBBBBBBBody html')
+        	//执行此方法时页面可能还没加载好，所以为了确保新信息被染色，使用settimeout延迟500ms执行
+        	setTimeout(function(){
+        		//.log($("body").html())
+        		//console.log("--")
+        		$("tr[data-index]:has(td:eq(6))").each(function(){
+        			if($(this).find("td:eq(5)").html()=="0")$(this).css("background","#ff7")
+        		})
+        	},500)  */
+        	
+        	//这样写为什么没有效果？js不是逐行编译+执行的吗？
+        	/* console.log("--here is th table initialized: ");
+        	console.log($("#bootstrap-table").bootstrapTable("getData")); */
+        //});
+    </script>
+</body>
+</html>

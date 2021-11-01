@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hrm.mapper.HrmEmployeeShiftMapper">
+    
+    <resultMap type="HrmEmployeeShift" id="HrmEmployeeShiftResult">
+        <result property="shiftId"    column="shift_id"    />
+        <result property="employeeId"    column="employee_id"    />
+        <result property="employeeName"    column="employee_name"    />
+        <result property="employeeExDepartment"    column="employee_ex_department"    />
+        <result property="employeeExPost"    column="employee_ex_post"    />
+        <result property="employeeExType"    column="employee_ex_type"    />
+        <result property="employeeExJob"    column="employee_ex_job"    />
+        <result property="employeeExTitle"    column="employee_ex_title"    />
+        <result property="employeeDepartment"    column="employee_department"    />
+        <result property="employeePost"    column="employee_post"    />
+        <result property="employeeType"    column="employee_type"    />
+        <result property="employeeJob"    column="employee_job"    />
+        <result property="employeeTitle"    column="employee_title"    />
+        <result property="employeeStatus"    column="employee_status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectHrmEmployeeShiftVo">
+        select shift_id, employee_id, employee_name, employee_ex_department, employee_ex_post, employee_ex_type, employee_ex_job, employee_ex_title, employee_department, employee_post, employee_type, employee_job, employee_title, employee_status, create_by, create_time, update_by, update_time, remark from hrm_employee_shift
+    </sql>
+
+    <select id="selectHrmEmployeeShiftList" parameterType="HrmEmployeeShift" resultMap="HrmEmployeeShiftResult">
+        <include refid="selectHrmEmployeeShiftVo"/>
+        <where>  
+            <if test="employeeId != null "> and employee_id = #{employeeId}</if>
+            <if test="employeeName != null  and employeeName != ''"> and employee_name like concat('%', #{employeeName}, '%')</if>
+            <if test="employeeExDepartment != null  and employeeExDepartment != ''"> and employee_ex_department = #{employeeExDepartment}</if>
+            <if test="employeeDepartment != null  and employeeDepartment != ''"> and employee_department = #{employeeDepartment}</if>
+            <if test="employeeStatus != null  and employeeStatus != ''"> and employee_status = #{employeeStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectHrmEmployeeShiftById" parameterType="Long" resultMap="HrmEmployeeShiftResult">
+        <include refid="selectHrmEmployeeShiftVo"/>
+        where shift_id = #{shiftId}
+    </select>
+        
+    <insert id="insertHrmEmployeeShift" parameterType="HrmEmployeeShift" useGeneratedKeys="true" keyProperty="shiftId">
+        insert into hrm_employee_shift
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="employeeId != null">employee_id,</if>
+            <if test="employeeName != null and employeeName != ''">employee_name,</if>
+            <if test="employeeExDepartment != null">employee_ex_department,</if>
+            <if test="employeeExPost != null">employee_ex_post,</if>
+            <if test="employeeExType != null">employee_ex_type,</if>
+            <if test="employeeExJob != null">employee_ex_job,</if>
+            <if test="employeeExTitle != null">employee_ex_title,</if>
+            <if test="employeeDepartment != null">employee_department,</if>
+            <if test="employeePost != null">employee_post,</if>
+            <if test="employeeType != null">employee_type,</if>
+            <if test="employeeJob != null">employee_job,</if>
+            <if test="employeeTitle != null">employee_title,</if>
+            <if test="employeeStatus != null">employee_status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="employeeId != null">#{employeeId},</if>
+            <if test="employeeName != null and employeeName != ''">#{employeeName},</if>
+            <if test="employeeExDepartment != null">#{employeeExDepartment},</if>
+            <if test="employeeExPost != null">#{employeeExPost},</if>
+            <if test="employeeExType != null">#{employeeExType},</if>
+            <if test="employeeExJob != null">#{employeeExJob},</if>
+            <if test="employeeExTitle != null">#{employeeExTitle},</if>
+            <if test="employeeDepartment != null">#{employeeDepartment},</if>
+            <if test="employeePost != null">#{employeePost},</if>
+            <if test="employeeType != null">#{employeeType},</if>
+            <if test="employeeJob != null">#{employeeJob},</if>
+            <if test="employeeTitle != null">#{employeeTitle},</if>
+            <if test="employeeStatus != null">#{employeeStatus},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHrmEmployeeShift" parameterType="HrmEmployeeShift">
+        update hrm_employee_shift
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="employeeId != null">employee_id = #{employeeId},</if>
+            <if test="employeeName != null and employeeName != ''">employee_name = #{employeeName},</if>
+            <if test="employeeExDepartment != null">employee_ex_department = #{employeeExDepartment},</if>
+            <if test="employeeExPost != null">employee_ex_post = #{employeeExPost},</if>
+            <if test="employeeExType != null">employee_ex_type = #{employeeExType},</if>
+            <if test="employeeExJob != null">employee_ex_job = #{employeeExJob},</if>
+            <if test="employeeExTitle != null">employee_ex_title = #{employeeExTitle},</if>
+            <if test="employeeDepartment != null">employee_department = #{employeeDepartment},</if>
+            <if test="employeePost != null">employee_post = #{employeePost},</if>
+            <if test="employeeType != null">employee_type = #{employeeType},</if>
+            <if test="employeeJob != null">employee_job = #{employeeJob},</if>
+            <if test="employeeTitle != null">employee_title = #{employeeTitle},</if>
+            <if test="employeeStatus != null">employee_status = #{employeeStatus},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where shift_id = #{shiftId}
+    </update>
+
+    <delete id="deleteHrmEmployeeShiftById" parameterType="Long">
+        delete from hrm_employee_shift where shift_id = #{shiftId}
+    </delete>
+
+    <delete id="deleteHrmEmployeeShiftByIds" parameterType="String">
+        delete from hrm_employee_shift where shift_id in 
+        <foreach item="shiftId" collection="array" open="(" separator="," close=")">
+            #{shiftId}
+        </foreach>
+    </delete>
+
+</mapper>

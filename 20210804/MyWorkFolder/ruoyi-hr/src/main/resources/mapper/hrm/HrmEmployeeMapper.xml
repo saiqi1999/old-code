@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hrm.mapper.HrmEmployeeMapper">
+    
+    <resultMap type="HrmEmployee" id="HrmEmployeeResult">
+        <result property="employeeId"    column="employee_id"    />
+		<result property="userId"	column="user_id"	/>
+        <result property="employeeName"    column="employee_name"    />
+        <result property="loginName"    column="login_name"    />
+        <result property="gender"    column="gender"    />
+        <result property="birthday"    column="birthday"    />
+        <result property="comeFrom"    column="come_from"    />
+        <result property="nationality"    column="nationality"    />
+        <result property="marriage"    column="marriage"    />
+        <result property="politicalStatus"    column="political_status"    />
+        <result property="idCardNumber"    column="id_card_number"    />
+        <result property="healthStatus"    column="health_status"    />
+        <result property="dateStartWorking"    column="date_start_working"    />
+        <result property="timeWorked"    column="time_worked"    />
+        <result property="degree"    column="degree"    />
+        <result property="university"    column="university"    />
+        <result property="major"    column="major"    />
+        <result property="graduateTime"    column="graduate_time"    />
+        <result property="foreignLanguage"    column="foreign_language"    />
+        <result property="foreignLanguageLevel"    column="foreign_language_level"    />
+        <result property="computerSkill"    column="computer_skill"    />
+        <result property="computerSkillLevel"    column="computer_skill_level"    />
+        <result property="employeeRank"    column="employee_rank"    />
+        <result property="employeeLevel"    column="employee_level"    />
+        <result property="certificate"    column="certificate"    />
+        <result property="resume"    column="resume"    />
+        <result property="favorite"    column="favorite"    />
+        <result property="emailAddress"    column="email_address"    />
+        <result property="employeeAddress"    column="employee_address"    />
+        <result property="phoneNumber"    column="phone_number"    />
+        <result property="zipCode"    column="zip_code"    />
+        <result property="height"    column="height"    />
+        <result property="weight"    column="weight"    />
+        <result property="bloodType"    column="blood_type"    />
+        <result property="employeeOrder"    column="employee_order"    />
+        <result property="dateEnrolled"    column="date_enrolled"    />
+        <result property="employeeDepartment"    column="employee_department"    />
+        <result property="employeePost"    column="employee_post"    />
+        <result property="employeeType"    column="employee_type"    />
+        <result property="employeeJob"    column="employee_job"    />
+        <result property="employeeTitle"    column="employee_title"    />
+        <result property="employeeStatus"    column="employee_status"    />
+        <result property="baseSalary"    column="base_salary"    />
+        <result property="wageCardBank"    column="wage_card_bank"    />
+        <result property="wageCardNumber"    column="wage_card_number"    />
+        <result property="photo"    column="photo"    />
+        <result property="otherRelationship"    column="other_relationship"    />
+        <result property="studyExperience"    column="study_experience"    />
+        <result property="workingExperience"    column="working_experience"    />
+        <result property="attachment"    column="attachment"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectHrmEmployeeVo">
+        select employee_id, user_id, employee_name, login_name, gender, birthday, come_from, nationality, marriage, political_status, id_card_number, health_status, date_start_working, time_worked, degree, university, major, graduate_time, foreign_language, foreign_language_level, computer_skill, computer_skill_level, employee_rank, employee_level, certificate, resume, favorite, email_address, employee_address, phone_number, zip_code, height, weight, blood_type, employee_order, date_enrolled, employee_department, employee_post, employee_type, employee_job, employee_title, employee_status, base_salary, wage_card_bank, wage_card_number, photo, other_relationship, study_experience, working_experience, attachment, create_by, create_time, update_by, update_time, remark from hrm_employee
+    </sql>
+
+    <select id="selectHrmEmployeeList" parameterType="HrmEmployee" resultMap="HrmEmployeeResult">
+        <include refid="selectHrmEmployeeVo"/>
+        <where>  
+			<if test="userId != null  and userId != ''"> and user_id = #{userId} </if>
+			<if test="loginName != null  and loginName != ''"> and login_name = #{loginName} </if>
+            <if test="employeeName != null  and employeeName != ''"> and employee_name like concat('%', #{employeeName}, '%')</if>
+            <if test="gender != null  and gender != ''"> and gender = #{gender}</if>
+            <if test="birthday != null "> and birthday = #{birthday}</if>
+            <if test="comeFrom != null  and comeFrom != ''"> and come_from = #{comeFrom}</if>
+            <if test="nationality != null  and nationality != ''"> and nationality = #{nationality}</if>
+            <if test="marriage != null  and marriage != ''"> and marriage = #{marriage}</if>
+            <if test="politicalStatus != null  and politicalStatus != ''"> and political_status = #{politicalStatus}</if>
+            <if test="idCardNumber != null  and idCardNumber != ''"> and id_card_number = #{idCardNumber}</if>
+            <if test="healthStatus != null  and healthStatus != ''"> and health_status = #{healthStatus}</if>
+            <if test="dateStartWorking != null "> and date_start_working = #{dateStartWorking}</if>
+            <if test="timeWorked != null  and timeWorked != ''"> and time_worked = #{timeWorked}</if>
+            <if test="degree != null  and degree != ''"> and degree = #{degree}</if>
+            <if test="university != null  and university != ''"> and university = #{university}</if>
+            <if test="major != null  and major != ''"> and major = #{major}</if>
+            <if test="graduateTime != null "> and graduate_time = #{graduateTime}</if>
+            <if test="foreignLanguage != null  and foreignLanguage != ''"> and foreign_language = #{foreignLanguage}</if>
+            <if test="foreignLanguageLevel != null  and foreignLanguageLevel != ''"> and foreign_language_level = #{foreignLanguageLevel}</if>
+            <if test="computerSkill != null  and computerSkill != ''"> and computer_skill = #{computerSkill}</if>
+            <if test="computerSkillLevel != null  and computerSkillLevel != ''"> and computer_skill_level = #{computerSkillLevel}</if>
+            <if test="employeeRank != null  and employeeRank != ''"> and employee_rank = #{employeeRank}</if>
+            <if test="employeeLevel != null  and employeeLevel != ''"> and employee_level = #{employeeLevel}</if>
+            <if test="certificate != null  and certificate != ''"> and certificate = #{certificate}</if>
+            <if test="resume != null  and resume != ''"> and resume = #{resume}</if>
+            <if test="favorite != null  and favorite != ''"> and favorite = #{favorite}</if>
+            <if test="emailAddress != null  and emailAddress != ''"> and email_address = #{emailAddress}</if>
+            <if test="employeeAddress != null  and employeeAddress != ''"> and employee_address = #{employeeAddress}</if>
+            <if test="phoneNumber != null  and phoneNumber != ''"> and phone_number = #{phoneNumber}</if>
+            <if test="zipCode != null  and zipCode != ''"> and zip_code = #{zipCode}</if>
+            <if test="height != null  and height != ''"> and height = #{height}</if>
+            <if test="weight != null  and weight != ''"> and weight = #{weight}</if>
+            <if test="bloodType != null  and bloodType != ''"> and blood_type = #{bloodType}</if>
+            <if test="employeeOrder != null  and employeeOrder != ''"> and employee_order = #{employeeOrder}</if>
+            <if test="dateEnrolled != null "> and date_enrolled = #{dateEnrolled}</if>
+            <if test="employeeDepartment != null  and employeeDepartment != ''"> and employee_department = #{employeeDepartment}</if>
+            <if test="employeePost != null  and employeePost != ''"> and employee_post = #{employeePost}</if>
+            <if test="employeeType != null  and employeeType != ''"> and employee_type = #{employeeType}</if>
+            <if test="employeeJob != null  and employeeJob != ''"> and employee_job = #{employeeJob}</if>
+            <if test="employeeTitle != null  and employeeTitle != ''"> and employee_title = #{employeeTitle}</if>
+            <if test="employeeStatus != null  and employeeStatus != ''"> and employee_status = #{employeeStatus}</if>
+            <if test="baseSalary != null "> and base_salary = #{baseSalary}</if>
+            <if test="wageCardBank != null  and wageCardBank != ''"> and wage_card_bank = #{wageCardBank}</if>
+            <if test="wageCardNumber != null  and wageCardNumber != ''"> and wage_card_number = #{wageCardNumber}</if>
+            <if test="photo != null  and photo != ''"> and photo = #{photo}</if>
+            <if test="otherRelationship != null  and otherRelationship != ''"> and other_relationship = #{otherRelationship}</if>
+            <if test="studyExperience != null  and studyExperience != ''"> and study_experience = #{studyExperience}</if>
+            <if test="workingExperience != null  and workingExperience != ''"> and working_experience = #{workingExperience}</if>
+            <if test="attachment != null  and attachment != ''"> and attachment = #{attachment}</if>
+        </where>
+    </select>
+    
+    <select id="selectHrmEmployeeById" parameterType="Long" resultMap="HrmEmployeeResult">
+        <include refid="selectHrmEmployeeVo"/>
+        where employee_id = #{employeeId}
+    </select>
+
+	<select id="selectHrmEmployeeByUserId" parameterType="String" resultMap="HrmEmployeeResult">
+        <include refid="selectHrmEmployeeVo"/>
+        where user_id = #{employeeId}
+    </select>
+        
+    <insert id="insertHrmEmployee" parameterType="HrmEmployee" useGeneratedKeys="true" keyProperty="employeeId">
+        insert into hrm_employee
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userId != null and userId != ''">user_id,</if>
+            <if test="employeeName != null and employeeName != ''">employee_name,</if>
+            <if test="loginName != null">login_name,</if>
+            <if test="gender != null">gender,</if>
+            <if test="birthday != null">birthday,</if>
+            <if test="comeFrom != null">come_from,</if>
+            <if test="nationality != null">nationality,</if>
+            <if test="marriage != null">marriage,</if>
+            <if test="politicalStatus != null">political_status,</if>
+            <if test="idCardNumber != null">id_card_number,</if>
+            <if test="healthStatus != null">health_status,</if>
+            <if test="dateStartWorking != null">date_start_working,</if>
+            <if test="timeWorked != null">time_worked,</if>
+            <if test="degree != null">degree,</if>
+            <if test="university != null">university,</if>
+            <if test="major != null">major,</if>
+            <if test="graduateTime != null">graduate_time,</if>
+            <if test="foreignLanguage != null">foreign_language,</if>
+            <if test="foreignLanguageLevel != null">foreign_language_level,</if>
+            <if test="computerSkill != null">computer_skill,</if>
+            <if test="computerSkillLevel != null">computer_skill_level,</if>
+            <if test="employeeRank != null">employee_rank,</if>
+            <if test="employeeLevel != null">employee_level,</if>
+            <if test="certificate != null">certificate,</if>
+            <if test="resume != null">resume,</if>
+            <if test="favorite != null">favorite,</if>
+            <if test="emailAddress != null">email_address,</if>
+            <if test="employeeAddress != null">employee_address,</if>
+            <if test="phoneNumber != null">phone_number,</if>
+            <if test="zipCode != null">zip_code,</if>
+            <if test="height != null">height,</if>
+            <if test="weight != null">weight,</if>
+            <if test="bloodType != null">blood_type,</if>
+            <if test="employeeOrder != null">employee_order,</if>
+            <if test="dateEnrolled != null">date_enrolled,</if>
+            <if test="employeeDepartment != null">employee_department,</if>
+            <if test="employeePost != null">employee_post,</if>
+            <if test="employeeType != null">employee_type,</if>
+            <if test="employeeJob != null">employee_job,</if>
+            <if test="employeeTitle != null">employee_title,</if>
+            <if test="employeeStatus != null">employee_status,</if>
+            <if test="baseSalary != null">base_salary,</if>
+            <if test="wageCardBank != null">wage_card_bank,</if>
+            <if test="wageCardNumber != null">wage_card_number,</if>
+            <if test="photo != null">photo,</if>
+            <if test="otherRelationship != null">other_relationship,</if>
+            <if test="studyExperience != null">study_experience,</if>
+            <if test="workingExperience != null">working_experience,</if>
+            <if test="attachment != null">attachment,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userId != null and userId != ''">#{userId},</if>
+            <if test="employeeName != null and employeeName != ''">#{employeeName},</if>
+            <if test="loginName != null">#{loginName},</if>
+            <if test="gender != null">#{gender},</if>
+            <if test="birthday != null">#{birthday},</if>
+            <if test="comeFrom != null">#{comeFrom},</if>
+            <if test="nationality != null">#{nationality},</if>
+            <if test="marriage != null">#{marriage},</if>
+            <if test="politicalStatus != null">#{politicalStatus},</if>
+            <if test="idCardNumber != null">#{idCardNumber},</if>
+            <if test="healthStatus != null">#{healthStatus},</if>
+            <if test="dateStartWorking != null">#{dateStartWorking},</if>
+            <if test="timeWorked != null">#{timeWorked},</if>
+            <if test="degree != null">#{degree},</if>
+            <if test="university != null">#{university},</if>
+            <if test="major != null">#{major},</if>
+            <if test="graduateTime != null">#{graduateTime},</if>
+            <if test="foreignLanguage != null">#{foreignLanguage},</if>
+            <if test="foreignLanguageLevel != null">#{foreignLanguageLevel},</if>
+            <if test="computerSkill != null">#{computerSkill},</if>
+            <if test="computerSkillLevel != null">#{computerSkillLevel},</if>
+            <if test="employeeRank != null">#{employeeRank},</if>
+            <if test="employeeLevel != null">#{employeeLevel},</if>
+            <if test="certificate != null">#{certificate},</if>
+            <if test="resume != null">#{resume},</if>
+            <if test="favorite != null">#{favorite},</if>
+            <if test="emailAddress != null">#{emailAddress},</if>
+            <if test="employeeAddress != null">#{employeeAddress},</if>
+            <if test="phoneNumber != null">#{phoneNumber},</if>
+            <if test="zipCode != null">#{zipCode},</if>
+            <if test="height != null">#{height},</if>
+            <if test="weight != null">#{weight},</if>
+            <if test="bloodType != null">#{bloodType},</if>
+            <if test="employeeOrder != null">#{employeeOrder},</if>
+            <if test="dateEnrolled != null">#{dateEnrolled},</if>
+            <if test="employeeDepartment != null">#{employeeDepartment},</if>
+            <if test="employeePost != null">#{employeePost},</if>
+            <if test="employeeType != null">#{employeeType},</if>
+            <if test="employeeJob != null">#{employeeJob},</if>
+            <if test="employeeTitle != null">#{employeeTitle},</if>
+            <if test="employeeStatus != null">#{employeeStatus},</if>
+            <if test="baseSalary != null">#{baseSalary},</if>
+            <if test="wageCardBank != null">#{wageCardBank},</if>
+            <if test="wageCardNumber != null">#{wageCardNumber},</if>
+            <if test="photo != null">#{photo},</if>
+            <if test="otherRelationship != null">#{otherRelationship},</if>
+            <if test="studyExperience != null">#{studyExperience},</if>
+            <if test="workingExperience != null">#{workingExperience},</if>
+            <if test="attachment != null">#{attachment},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHrmEmployee" parameterType="HrmEmployee">
+        update hrm_employee
+        <trim prefix="SET" suffixOverrides=",">
+			<if test="userId != null and userId != ''">user_id = #{userId},</if>
+            <if test="employeeName != null and employeeName != ''">employee_name = #{employeeName},</if>
+            <if test="loginName != null">login_name = #{loginName},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="birthday != null">birthday = #{birthday},</if>
+            <if test="comeFrom != null">come_from = #{comeFrom},</if>
+            <if test="nationality != null">nationality = #{nationality},</if>
+            <if test="marriage != null">marriage = #{marriage},</if>
+            <if test="politicalStatus != null">political_status = #{politicalStatus},</if>
+            <if test="idCardNumber != null">id_card_number = #{idCardNumber},</if>
+            <if test="healthStatus != null">health_status = #{healthStatus},</if>
+            <if test="dateStartWorking != null">date_start_working = #{dateStartWorking},</if>
+            <if test="timeWorked != null">time_worked = #{timeWorked},</if>
+            <if test="degree != null">degree = #{degree},</if>
+            <if test="university != null">university = #{university},</if>
+            <if test="major != null">major = #{major},</if>
+            <if test="graduateTime != null">graduate_time = #{graduateTime},</if>
+            <if test="foreignLanguage != null">foreign_language = #{foreignLanguage},</if>
+            <if test="foreignLanguageLevel != null">foreign_language_level = #{foreignLanguageLevel},</if>
+            <if test="computerSkill != null">computer_skill = #{computerSkill},</if>
+            <if test="computerSkillLevel != null">computer_skill_level = #{computerSkillLevel},</if>
+            <if test="employeeRank != null">employee_rank = #{employeeRank},</if>
+            <if test="employeeLevel != null">employee_level = #{employeeLevel},</if>
+            <if test="certificate != null">certificate = #{certificate},</if>
+            <if test="resume != null">resume = #{resume},</if>
+            <if test="favorite != null">favorite = #{favorite},</if>
+            <if test="emailAddress != null">email_address = #{emailAddress},</if>
+            <if test="employeeAddress != null">employee_address = #{employeeAddress},</if>
+            <if test="phoneNumber != null">phone_number = #{phoneNumber},</if>
+            <if test="zipCode != null">zip_code = #{zipCode},</if>
+            <if test="height != null">height = #{height},</if>
+            <if test="weight != null">weight = #{weight},</if>
+            <if test="bloodType != null">blood_type = #{bloodType},</if>
+            <if test="employeeOrder != null">employee_order = #{employeeOrder},</if>
+            <if test="dateEnrolled != null">date_enrolled = #{dateEnrolled},</if>
+            <if test="employeeDepartment != null">employee_department = #{employeeDepartment},</if>
+            <if test="employeePost != null">employee_post = #{employeePost},</if>
+            <if test="employeeType != null">employee_type = #{employeeType},</if>
+            <if test="employeeJob != null">employee_job = #{employeeJob},</if>
+            <if test="employeeTitle != null">employee_title = #{employeeTitle},</if>
+            <if test="employeeStatus != null">employee_status = #{employeeStatus},</if>
+            <if test="baseSalary != null">base_salary = #{baseSalary},</if>
+            <if test="wageCardBank != null">wage_card_bank = #{wageCardBank},</if>
+            <if test="wageCardNumber != null">wage_card_number = #{wageCardNumber},</if>
+            <if test="photo != null">photo = #{photo},</if>
+            <if test="otherRelationship != null">other_relationship = #{otherRelationship},</if>
+            <if test="studyExperience != null">study_experience = #{studyExperience},</if>
+            <if test="workingExperience != null">working_experience = #{workingExperience},</if>
+            <if test="attachment != null">attachment = #{attachment},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where employee_id = #{employeeId}
+    </update>
+
+    <delete id="deleteHrmEmployeeById" parameterType="Long">
+        delete from hrm_employee where employee_id = #{employeeId}
+    </delete>
+
+    <delete id="deleteHrmEmployeeByIds" parameterType="String">
+        delete from hrm_employee where employee_id in 
+        <foreach item="employeeId" collection="array" open="(" separator="," close=")">
+            #{employeeId}
+        </foreach>
+    </delete>
+
+</mapper>
